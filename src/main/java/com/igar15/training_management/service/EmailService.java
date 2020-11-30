@@ -24,4 +24,14 @@ public class EmailService {
         message.setFrom(environment.getProperty("support.email"));
         mailSender.send(message);
     }
+
+    public void sendPasswordResetEmail(String name, String email, String passwordResetToken) {
+        final String url = "http://localhost:8080/training-management" + "/users/password-reset?token=" + passwordResetToken;
+        final SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Reset password");
+        message.setText("Hello, " + name + "! Please open the following URL to reset your password: \r\n" + url);
+        message.setFrom(environment.getProperty("support.email"));
+        mailSender.send(message);
+    }
 }

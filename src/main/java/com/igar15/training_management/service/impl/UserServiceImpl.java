@@ -1,9 +1,13 @@
 package com.igar15.training_management.service.impl;
 
+import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.entity.enums.Role;
 import com.igar15.training_management.exceptions.EmailExistException;
+import com.igar15.training_management.exceptions.TokenExpiredException;
+import com.igar15.training_management.exceptions.TokenNotFoundException;
 import com.igar15.training_management.exceptions.UserNotFoundException;
+import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
 import com.igar15.training_management.service.EmailService;
 import com.igar15.training_management.service.UserService;
@@ -15,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
 
 
@@ -81,28 +87,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifyEmailToken(String token) {
-        boolean returnValue = false;
-        Optional<User> userOptional = userRepository.findByEmailVerificationToken(token);
-        if (userOptional.isPresent()) {
-            if (!jwtTokenProvider.isTokenExpired(token)) {
-                User user = userOptional.get();
-                user.setEmailVerificationToken(null);
-                user.setEmailVerificationStatus(true);
-                userRepository.save(user);
-                returnValue = true;
-            }
+    public void verifyEmailToken(String token) {
+        User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new UserNotFoundException("Not found user with such token"));
+        if (jwtTokenProvider.isTokenExpired(token)) {
+            throw new TokenExpiredException("Sent token expired");
         }
-        return returnValue;
+        user.setEmailVerificationToken(null);
+        user.setEmailVerificationStatus(true);
+        userRepository.save(user);
     }
 
     @Override
-    public boolean requestPasswordReset(String email) {
-        return false;
+    public void requestPasswordReset(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Not found user with email: " + email));
+        String token = jwtTokenProvider.generatePasswordResetToken(email);
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+        passwordResetToken.setToken(token);
+        passwordResetToken.setUser(user);
+        passwordResetTokenRepository.save(passwordResetToken);
+        emailService.sendPasswordResetEmail(user.getName(), email, token);
     }
 
     @Override
-    public boolean resetPassword(String token, String password) {
-        return false;
+    public void resetPassword(String token, String password) {
+        if (jwtTokenProvider.isTokenExpired(token)) {
+            throw new TokenExpiredException("Sent token expired");
+        }
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new TokenNotFoundException("Such token not found"));
+        //need to encrypt password
+        User user = passwordResetToken.getUser();
+        user.setPassword(password);
+        userRepository.save(user);
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 }

@@ -60,6 +60,13 @@ public class User extends AbstractNamedEntity {
         this.role = role;
     }
 
+    public User(long id, String name, String email, String password, Role role) {
+        super(id, name);
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public String getEmail() {
         return email;
     }

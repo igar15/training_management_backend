@@ -1,3 +1,4 @@
+drop table if exists password_reset_tokens;
 drop table if exists exercises;
 drop table if exists exercise_types;
 drop table if exists workouts;
@@ -44,3 +45,12 @@ create table exercises (
     foreign key (exercise_type_id) references exercise_types (id) on delete cascade,
     foreign key (workout_id) references workouts (id) on delete cascade
 );
+
+create table password_reset_tokens (
+    id bigint primary key default nextval('global_seq'),
+    token varchar not null,
+    user_id bigint not null,
+    foreign key (user_id) references users (id) on delete cascade
+);
+create unique index password_reset_tokens_unique_user_id_idx on password_reset_tokens (user_id);
+

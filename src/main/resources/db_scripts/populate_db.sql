@@ -1,3 +1,4 @@
+delete from password_reset_tokens;
 delete from exercises;
 delete from exercise_types;
 delete from workouts;
@@ -5,10 +6,10 @@ delete from users;
 alter sequence global_seq restart with 1000;
 
 insert into users (name, email, password, registered, email_verification_token, email_verification_status, is_non_locked, role)
-values ('user1', 'user1@yandex.ru', '123456', '2020-11-29 19:00:00', '123AAA123', true, true, 'ROLE_USER'),
+values ('user1', 'user1@yandex.ru', '123456', '2020-11-29 19:00:00', null, true, true, 'ROLE_USER'),
        ('user2', 'user2@yandex.ru', '123456', '2020-11-29 19:00:00', '123AAA123', false, true, 'ROLE_USER'),
-       ('user3', 'user3@yandex.ru', '123456', '2020-11-29 19:00:00', '123AAA123', true, false, 'ROLE_USER'),
-       ('admin', 'admin@yandex.ru', '123456', '2020-11-29 19:00:00', '123AAA123', true, true, 'ROLE_ADMIN');
+       ('user3', 'user3@yandex.ru', '123456', '2020-11-29 19:00:00', null, true, false, 'ROLE_USER'),
+       ('admin', 'admin@yandex.ru', '123456', '2020-11-29 19:00:00', null, true, true, 'ROLE_ADMIN');
 
 insert into exercise_types (name, measure, user_id)
 values ('user1 exercise type 1', 'times', 1000),

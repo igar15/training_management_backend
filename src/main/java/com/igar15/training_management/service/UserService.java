@@ -19,10 +19,10 @@ public interface UserService {
 
     void deleteUser(long id);
 
-    boolean verifyEmailToken(String token);
+    void verifyEmailToken(String token);
 
-    boolean requestPasswordReset(String email);
+    void requestPasswordReset(String email);
 
-    boolean resetPassword(String token, String password);
+    void resetPassword(String token, String password);
 
 }

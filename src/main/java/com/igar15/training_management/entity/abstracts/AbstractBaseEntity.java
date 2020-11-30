@@ -9,6 +9,7 @@ public class AbstractBaseEntity {
 
     @Id
     @Column(name = "id")
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = 1000)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Long id;
 

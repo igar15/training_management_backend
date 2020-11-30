@@ -5,23 +5,29 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.igar15.training_management.constants.SecurityConstant;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    @Value("#{jwt.secretKey}")
+//    @Value("#{jwt.secretKey}")
     private String secretKey;
+
+    @Autowired
+    private Environment environment;
 
     public String generateEmailVerificationToken(String email) {
         return JWT.create()
                 .withIssuedAt(new Date())
                 .withSubject(email)
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME))
-                .sign(Algorithm.HMAC512(secretKey));
+                .sign(Algorithm.HMAC512(environment.getProperty("jwt.secretKey")));
     }
 
     public boolean isTokenExpired(String token) {
@@ -33,7 +39,7 @@ public class JwtTokenProvider {
     private JWTVerifier getJWTVerifier() {
         JWTVerifier verifier = null;
         try {
-            verifier = JWT.require(Algorithm.HMAC512(secretKey)).build();
+            verifier = JWT.require(Algorithm.HMAC512(environment.getProperty("jwt.secretKey"))).build();
         } catch (JWTVerificationException e) {
             throw new JWTVerificationException(SecurityConstant.TOKEN_CANNOT_BE_VERIFIED);
         }
@@ -41,4 +47,11 @@ public class JwtTokenProvider {
     }
 
 
+    public String generatePasswordResetToken(String email) {
+        return JWT.create()
+                .withIssuedAt(new Date())
+                .withSubject(email)
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.PASSWORD_RESET_TOKEN_EXPIRATION_TIME))
+                .sign(Algorithm.HMAC512(environment.getProperty("jwt.secretKey")));
+    }
 }
