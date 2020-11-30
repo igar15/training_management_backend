@@ -1,6 +1,7 @@
 package com.igar15.training_management.service;
 
 import com.igar15.training_management.entity.User;
+import com.igar15.training_management.to.UserTo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,9 +13,9 @@ public interface UserService {
 
     User getUserByEmail(String email);
 
-    User createUser(User user);
+    User createUser(UserTo userTo);
 
-    User updateUser(User user);
+    User updateUser(long id, UserTo userTo);
 
     void deleteUser(long id);
 
