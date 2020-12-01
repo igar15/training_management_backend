@@ -16,15 +16,15 @@ public class AbstractBaseEntity {
     public AbstractBaseEntity() {
     }
 
-    public AbstractBaseEntity(long id) {
+    public AbstractBaseEntity(Long id) {
         this.id = id;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

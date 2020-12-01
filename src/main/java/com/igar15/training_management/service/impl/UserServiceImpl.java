@@ -59,7 +59,10 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(userTo.getEmail()).isPresent()) {
             throw new EmailExistException("User with email " + userTo.getEmail() + " already exists");
         }
-        userTo.setEmail(userTo.getEmail().toLowerCase());
+        String email = userTo.getEmail();
+        if (email != null) {
+            userTo.setEmail(email.toLowerCase());
+        }
         // need to encrypt password
         User user = new User();
         user.setName(userTo.getName());
@@ -89,9 +92,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void verifyEmailToken(String token) {
         User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new UserNotFoundException("Not found user with such token"));
-        if (jwtTokenProvider.isTokenExpired(token)) {
-            throw new TokenExpiredException("Sent token expired");
-        }
+        jwtTokenProvider.isTokenExpired(token);
         user.setEmailVerificationToken(null);
         user.setEmailVerificationStatus(true);
         userRepository.save(user);
@@ -110,9 +111,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(String token, String password) {
-        if (jwtTokenProvider.isTokenExpired(token)) {
-            throw new TokenExpiredException("Sent token expired");
-        }
+        jwtTokenProvider.isTokenExpired(token);
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new TokenNotFoundException("Such token not found"));
         //need to encrypt password
         User user = passwordResetToken.getUser();

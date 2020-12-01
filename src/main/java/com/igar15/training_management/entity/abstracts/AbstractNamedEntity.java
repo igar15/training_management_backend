@@ -16,7 +16,7 @@ public class AbstractNamedEntity extends AbstractBaseEntity {
     public AbstractNamedEntity() {
     }
 
-    public AbstractNamedEntity(long id, @NotBlank @Size(min = 2) String name) {
+    public AbstractNamedEntity(Long id, @NotBlank @Size(min = 2) String name) {
         super(id);
         this.name = name;
     }

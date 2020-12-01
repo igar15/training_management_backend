@@ -30,7 +30,6 @@ public class User extends AbstractNamedEntity {
     private Date registered = new Date();
 
     @Column(name = "email_verification_token")
-    @NotNull
     private String emailVerificationToken;
 
     @Column(name = "email_verification_status")
@@ -49,7 +48,7 @@ public class User extends AbstractNamedEntity {
     public User() {
     }
 
-    public User(long id, String name, String email, String password, Date registered, String emailVerificationToken, boolean emailVerificationStatus, boolean isNonLocked, Role role) {
+    public User(Long id, String name, String email, String password, Date registered, String emailVerificationToken, boolean emailVerificationStatus, boolean isNonLocked, Role role) {
         super(id, name);
         this.email = email;
         this.password = password;
@@ -60,7 +59,7 @@ public class User extends AbstractNamedEntity {
         this.role = role;
     }
 
-    public User(long id, String name, String email, String password, Role role) {
+    public User(Long id, String name, String email, String password, Role role) {
         super(id, name);
         this.email = email;
         this.password = password;
