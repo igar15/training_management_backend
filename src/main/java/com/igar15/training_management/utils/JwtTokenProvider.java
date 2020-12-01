@@ -6,18 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.igar15.training_management.constants.SecurityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-
-//    @Value("#{jwt.secretKey}")
-    private String secretKey;
 
     @Autowired
     private Environment environment;
