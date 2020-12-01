@@ -1,5 +1,7 @@
 package com.igar15.training_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.igar15.training_management.entity.abstracts.AbstractNamedEntity;
 import com.igar15.training_management.entity.enums.Role;
 
@@ -20,21 +22,26 @@ public class User extends AbstractNamedEntity {
     @Size(max = 100)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     @NotBlank
     @Size(min = 5, max = 100)
     private String password;
 
+    @JsonIgnore
     @Column(name = "registered")
     @NotNull
     private Date registered = new Date();
 
+    @JsonIgnore
     @Column(name = "email_verification_token")
     private String emailVerificationToken;
 
+    @JsonIgnore
     @Column(name = "email_verification_status")
     private boolean emailVerificationStatus = false;
 
+    @JsonIgnore
     @Column(name = "is_non_locked")
     private boolean isNonLocked = true;
 
