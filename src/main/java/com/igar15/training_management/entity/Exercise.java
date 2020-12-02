@@ -32,7 +32,7 @@ public class Exercise extends AbstractBaseEntity {
     public Exercise() {
     }
 
-    public Exercise(long id, int quantity, ExerciseType exerciseType, Workout workout) {
+    public Exercise(Long id, int quantity, ExerciseType exerciseType, Workout workout) {
         super(id);
         this.quantity = quantity;
         this.exerciseType = exerciseType;

@@ -27,10 +27,9 @@ public class ExerciseType extends AbstractNamedEntity {
     public ExerciseType() {
     }
 
-    public ExerciseType(long id, String name, Measure measure, User user) {
+    public ExerciseType(Long id, String name, Measure measure) {
         super(id, name);
         this.measure = measure;
-        this.user = user;
     }
 
     public Measure getMeasure() {

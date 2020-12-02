@@ -69,7 +69,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void getUserByIdWhereUserNotFoundExpected() {
+    void getUserByIdWhereNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserById(NOT_FOUND_ID));
     }
 
@@ -81,7 +81,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void getUserByEmailWhereUserNotFoundExpected() {
+    void getUserByEmailWhereNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserByEmail(NOT_FOUND_EMAIL));
     }
 
@@ -122,7 +122,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     void updateUser() {
         UserTo updatedUserTo = getUpdatedUserTo();
         User updatedUserExpected = getUpdatedUser();
-        User updatedUser = userService.updateUser(USER1_ID, updatedUserTo);
+        userService.updateUser(USER1_ID, updatedUserTo);
         assertThat(userService.getUserById(USER1_ID)).usingRecursiveComparison()
                 .ignoringFields("registered", "emailVerificationToken", "emailVerificationStatus", "isNonLocked").isEqualTo(updatedUserExpected);
     }
@@ -134,7 +134,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void deleteUserWhereUserNotFoundExpected() {
+    void deleteUserWhereNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.deleteUser(NOT_FOUND_ID));
     }
 
@@ -151,7 +151,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void verifyEmailTokenWhereUserNotFoundExpected() {
+    void verifyEmailTokenWhereNotFoundExpected() {
         String random = RandomString.make();
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.verifyEmailToken(random));
     }
@@ -166,7 +166,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void requestPasswordResetWhereUserNotFoundExpected() {
+    void requestPasswordResetWhereNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.requestPasswordReset(NOT_FOUND_EMAIL));
     }
 

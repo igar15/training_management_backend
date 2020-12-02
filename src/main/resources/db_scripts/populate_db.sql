@@ -12,11 +12,11 @@ values ('user1', 'user1@test.ru', '123456', '2020-11-29 19:00:00', null, true, t
        ('admin', 'admin@test.ru', '123456', '2020-11-29 19:00:00', null, true, true, 'ROLE_ADMIN');
 
 insert into exercise_types (name, measure, user_id)
-values ('user1 exercise type 1', 'times', 1000),
-       ('user1 exercise type 2', 'seconds', 1000),
-       ('user1 exercise type 3', 'kilometers', 1000),
-       ('admin exercise type 1', 'times', 1003),
-       ('admin exercise type 2', 'times', 1003);
+values ('user1 exercise type 1', 'TIMES', 1000),
+       ('user1 exercise type 2', 'SECONDS', 1000),
+       ('user1 exercise type 3', 'KILOMETERS', 1000),
+       ('admin exercise type 1', 'TIMES', 1003),
+       ('admin exercise type 2', 'TIMES', 1003);
 
 insert into workouts (date_time, user_id)
 values ('2020-11-28 13:00:00', 1000),

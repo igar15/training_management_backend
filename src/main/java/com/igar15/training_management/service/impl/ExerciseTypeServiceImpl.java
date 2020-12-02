@@ -40,12 +40,11 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
         if (exerciseTypeRepository.findByNameAndUser_Id(name, userId).isPresent()) {
             throw new ExerciseTypeExistException("Exercise type with name " + name + " already exists");
         }
-        if (exerciseTypeTo.getMeasure() != null) {
-            exerciseTypeTo.setMeasure(exerciseTypeTo.getMeasure().toUpperCase());
-        }
         ExerciseType exerciseType = new ExerciseType();
         exerciseType.setName(name);
-        exerciseType.setMeasure(Measure.valueOf(exerciseTypeTo.getMeasure()));
+        if (exerciseTypeTo.getMeasure() != null) {
+            exerciseType.setMeasure(Measure.valueOf(exerciseTypeTo.getMeasure().toUpperCase()));
+        }
         exerciseType.setUser(userRepository.getOne(userId));
         exerciseTypeRepository.save(exerciseType);
         return exerciseType;
@@ -55,11 +54,10 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     public ExerciseType updateExerciseType(ExerciseTypeTo exerciseTypeTo, long userId) {
         Assert.notNull(exerciseTypeTo, "Exercise type must not be null");
         ExerciseType exerciseType = getExerciseTypeById(exerciseTypeTo.getId(), userId);
-        if (exerciseTypeTo.getMeasure() != null) {
-            exerciseTypeTo.setMeasure(exerciseTypeTo.getMeasure().toUpperCase());
-        }
         exerciseType.setName(exerciseTypeTo.getName());
-        exerciseType.setMeasure(Measure.valueOf(exerciseTypeTo.getMeasure()));
+        if (exerciseTypeTo.getMeasure() != null) {
+            exerciseType.setMeasure(Measure.valueOf(exerciseTypeTo.getMeasure().toUpperCase()));
+        }
         exerciseTypeRepository.save(exerciseType);
         return exerciseType;
     }

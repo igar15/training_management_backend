@@ -27,7 +27,7 @@ public class Workout extends AbstractBaseEntity {
     public Workout() {
     }
 
-    public Workout(long id, LocalDateTime dateTime, User user) {
+    public Workout(Long id, LocalDateTime dateTime, User user) {
         super(id);
         this.dateTime = dateTime;
         this.user = user;
