@@ -1,6 +1,5 @@
 package com.igar15.training_management.to;
 
-import javax.validation.constraints.Size;
 
 public class UserTo {
 

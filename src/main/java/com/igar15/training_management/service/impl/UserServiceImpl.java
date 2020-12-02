@@ -4,9 +4,8 @@ import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.entity.enums.Role;
 import com.igar15.training_management.exceptions.EmailExistException;
-import com.igar15.training_management.exceptions.TokenExpiredException;
 import com.igar15.training_management.exceptions.TokenNotFoundException;
-import com.igar15.training_management.exceptions.UserNotFoundException;
+import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
 import com.igar15.training_management.service.EmailService;
@@ -44,13 +43,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Not found user with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Not found user with id: " + id));
     }
 
     @Override
     public User getUserByEmail(String email) {
         Assert.notNull(email, "Email must not be null");
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Not found user with email: " + email));
+        return userRepository.findByEmail(email).orElseThrow(() -> new MyEntityNotFoundException("Not found user with email: " + email));
     }
 
     @Override
@@ -77,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(long id, UserTo userTo) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Not found user with id: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Not found user with id: " + id));
         user.setName(userTo.getName());
         userRepository.save(user);
         return user;
@@ -85,13 +84,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Not found user with id: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Not found user with id: " + id));
         userRepository.delete(user);
     }
 
     @Override
     public void verifyEmailToken(String token) {
-        User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new UserNotFoundException("Not found user with such token"));
+        User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found user with such token"));
         jwtTokenProvider.isTokenExpired(token);
         user.setEmailVerificationToken(null);
         user.setEmailVerificationStatus(true);
@@ -100,7 +99,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void requestPasswordReset(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Not found user with email: " + email));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new MyEntityNotFoundException("Not found user with email: " + email));
         String token = jwtTokenProvider.generatePasswordResetToken(email);
         PasswordResetToken passwordResetToken = new PasswordResetToken();
         passwordResetToken.setToken(token);

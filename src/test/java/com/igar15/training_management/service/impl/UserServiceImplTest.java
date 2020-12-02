@@ -9,7 +9,7 @@ import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.EmailExistException;
 import com.igar15.training_management.exceptions.TokenNotFoundException;
-import com.igar15.training_management.exceptions.UserNotFoundException;
+import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
 import com.igar15.training_management.service.UserService;
@@ -70,7 +70,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getUserByIdWhereUserNotFoundExpected() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserById(NOT_FOUND_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserById(NOT_FOUND_ID));
     }
 
     @Test
@@ -82,7 +82,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getUserByEmailWhereUserNotFoundExpected() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserByEmail(NOT_FOUND_EMAIL));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserByEmail(NOT_FOUND_EMAIL));
     }
 
     @Test
@@ -130,12 +130,12 @@ class UserServiceImplTest extends AbstractServiceTest {
     @Test
     void deleteUser() {
         userService.deleteUser(USER1_ID);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserById(USER1_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserById(USER1_ID));
     }
 
     @Test
     void deleteUserWhereUserNotFoundExpected() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.deleteUser(NOT_FOUND_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.deleteUser(NOT_FOUND_ID));
     }
 
     @Test
@@ -153,7 +153,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     @Test
     void verifyEmailTokenWhereUserNotFoundExpected() {
         String random = RandomString.make();
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.verifyEmailToken(random));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.verifyEmailToken(random));
     }
 
     @Test
@@ -167,7 +167,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void requestPasswordResetWhereUserNotFoundExpected() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.requestPasswordReset(NOT_FOUND_EMAIL));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.requestPasswordReset(NOT_FOUND_EMAIL));
     }
 
     @Test

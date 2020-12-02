@@ -3,6 +3,7 @@ package com.igar15.training_management.controller;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.MyHttpResponse;
+import com.igar15.training_management.to.PasswordResetModel;
 import com.igar15.training_management.to.UserTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,15 +50,30 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MyHttpResponse> deleteUser(@PathVariable("id") long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable("id") long id) {
         userService.deleteUser(id);
-        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.NO_CONTENT.value(), HttpStatus.NO_CONTENT, HttpStatus.NO_CONTENT.getReasonPhrase(), "User deleted successfully");
-        return new ResponseEntity<>(myHttpResponse, HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/email-verification")
+    public ResponseEntity<MyHttpResponse> verifyEmailToken(@RequestParam("token") String token) {
+        userService.verifyEmailToken(token);
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), "Your email was successfully verified.");
+        return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
+    }
 
+    @GetMapping("/password-reset-request/{email}")
+    public ResponseEntity<MyHttpResponse> requestPasswordReset(@PathVariable("email") String email) {
+        userService.requestPasswordReset(email);
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), "The message with link to reset your password was sent to " + email);
+        return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
+    }
 
-
-
+    @PostMapping("/resetPassword")
+    public ResponseEntity<MyHttpResponse> resetPassword(@RequestBody PasswordResetModel passwordResetModel) {
+        userService.resetPassword(passwordResetModel.getToken(), passwordResetModel.getPassword());
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), "Your password was successfully reset");
+        return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
+    }
 
 }
