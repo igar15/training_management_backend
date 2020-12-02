@@ -1,5 +1,6 @@
 package com.igar15.training_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igar15.training_management.entity.abstracts.AbstractNamedEntity;
 import com.igar15.training_management.entity.enums.Measure;
 import org.hibernate.annotations.OnDelete;
@@ -17,6 +18,7 @@ public class ExerciseType extends AbstractNamedEntity {
     @NotNull
     private Measure measure;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
