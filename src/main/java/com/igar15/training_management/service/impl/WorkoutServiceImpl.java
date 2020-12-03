@@ -31,7 +31,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public Workout getWorkout(long id, long userId) {
+    public Workout getWorkoutById(long id, long userId) {
         return workoutRepository.findByIdAndUser_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found workout with id: " + id));
     }
 
@@ -57,7 +57,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (optionalWorkout.isPresent() && !optionalWorkout.get().getId().equals(workoutTo.getId())) {
             throw new WorkoutExistException("Workout with date " + dateTime.toLocalDate() + " and time " + dateTime.toLocalTime() + " already exists");
         }
-        Workout workout = getWorkout(workoutTo.getId(), userId);
+        Workout workout = getWorkoutById(workoutTo.getId(), userId);
         workout.setDateTime(workoutTo.getDateTime());
         workoutRepository.save(workout);
         return workout;
@@ -65,7 +65,8 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public void deleteWorkout(long id, long userId) {
-        Workout workout = getWorkout(id, userId);
+        Workout workout = getWorkoutById(id, userId);
         workoutRepository.delete(workout);
     }
+
 }

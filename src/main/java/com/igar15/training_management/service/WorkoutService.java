@@ -9,7 +9,7 @@ public interface WorkoutService {
 
     Page<Workout> getWorkouts(Pageable pageable, long userId);
 
-    Workout getWorkout(long id, long userId);
+    Workout getWorkoutById(long id, long userId);
 
     Workout createWorkout(WorkoutTo workoutTo, long userId);
 

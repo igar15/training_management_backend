@@ -6,7 +6,7 @@ import com.igar15.training_management.to.ExerciseTypeTo;
 
 public class ExerciseTypeTestData {
 
-    public static final long NOT_FOUND_ID = 10;
+    public static final long NOT_FOUND_EXERCISE_TYPE_ID = 10;
 
     public static final long USER1_EXERCISE_TYPE1_ID = 1004;
     public static final long USER1_EXERCISE_TYPE2_ID = 1005;

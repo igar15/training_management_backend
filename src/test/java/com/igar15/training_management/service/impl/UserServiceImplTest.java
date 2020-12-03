@@ -70,7 +70,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getUserByIdWhereNotFoundExpected() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserById(NOT_FOUND_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserById(NOT_FOUND_USER_ID));
     }
 
     @Test
@@ -135,7 +135,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void deleteUserWhereNotFoundExpected() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.deleteUser(NOT_FOUND_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.deleteUser(NOT_FOUND_USER_ID));
     }
 
     @Test

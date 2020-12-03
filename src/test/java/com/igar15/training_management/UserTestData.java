@@ -13,7 +13,7 @@ import java.util.List;
 
 public class UserTestData {
 
-    public static final long NOT_FOUND_ID = 10;
+    public static final long NOT_FOUND_USER_ID = 10;
     public static final String NOT_FOUND_EMAIL = "user99@yandex.ru";
     public static final long USER1_ID = 1000;
     public static final long USER2_ID = 1001;

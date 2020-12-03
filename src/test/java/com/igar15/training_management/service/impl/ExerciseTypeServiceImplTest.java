@@ -38,7 +38,7 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getExerciseTypeByIdWhereNotFoundExpected() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.getExerciseTypeById(ExerciseTypeTestData.NOT_FOUND_ID, USER1_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.getExerciseTypeById(ExerciseTypeTestData.NOT_FOUND_EXERCISE_TYPE_ID, USER1_ID));
     }
 
     @Test
@@ -65,7 +65,7 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void createExerciseTypeWithExistingNameForAnotherUser() {
+    void createExerciseTypeWithExistingNameForDifferentUsers() {
         ExerciseTypeTo newExerciseTypeTo = getNewExerciseTypeTo();
         newExerciseTypeTo.setName(USER1_EXERCISE_TYPE1.getName());
         ExerciseType exerciseType = exerciseTypeService.createExerciseType(newExerciseTypeTo, ADMIN_ID);
@@ -121,7 +121,7 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
 
     @Test
     void deleteExerciseTypeWhereNotFoundExpected() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.deleteExerciseType(ExerciseTypeTestData.NOT_FOUND_ID, USER1_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.deleteExerciseType(ExerciseTypeTestData.NOT_FOUND_EXERCISE_TYPE_ID, USER1_ID));
     }
 
     @Test
