@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExerciseTypeServiceImpl implements ExerciseTypeService {
@@ -53,6 +54,11 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     @Override
     public ExerciseType updateExerciseType(ExerciseTypeTo exerciseTypeTo, long userId) {
         Assert.notNull(exerciseTypeTo, "Exercise type must not be null");
+        String name = exerciseTypeTo.getName();
+        Optional<ExerciseType> exerciseTypeOptional = exerciseTypeRepository.findByNameAndUser_Id(name, userId);
+        if (exerciseTypeOptional.isPresent() && !exerciseTypeOptional.get().getId().equals(exerciseTypeTo.getId())) {
+            throw new ExerciseTypeExistException("Exercise type with name " + name + " already exists");
+        }
         ExerciseType exerciseType = getExerciseTypeById(exerciseTypeTo.getId(), userId);
         exerciseType.setName(exerciseTypeTo.getName());
         if (exerciseTypeTo.getMeasure() != null) {
@@ -64,7 +70,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public void deleteExerciseType(long id, long userId) {
-        ExerciseType exerciseType = exerciseTypeRepository.findByIdAndUser_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise type with id: " + id));
+        ExerciseType exerciseType = getExerciseTypeById(id, userId);
         exerciseTypeRepository.delete(exerciseType);
     }
 }

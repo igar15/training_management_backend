@@ -91,6 +91,23 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
+    void updateExerciseTypeWithExistingName() {
+        ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
+        updatedExerciseTypeTo.setName("user1 exercise type 2");
+        Assertions.assertThrows(ExerciseTypeExistException.class, () -> exerciseTypeService.updateExerciseType(updatedExerciseTypeTo, USER1_ID));
+    }
+
+    @Test
+    void updateExerciseTypeWhereNameNotChange() {
+        ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
+        ExerciseType updatedExerciseTypeExpected = getUpdatedExerciseType();
+        updatedExerciseTypeTo.setName("user1 exercise type 1");
+        updatedExerciseTypeExpected.setName("user1 exercise type 1");
+        exerciseTypeService.updateExerciseType(updatedExerciseTypeTo, USER1_ID);
+        assertThat(exerciseTypeService.getExerciseTypeById(updatedExerciseTypeExpected.getId(), USER1_ID)).isEqualTo(updatedExerciseTypeExpected);
+    }
+
+    @Test
     void updateExerciseTypeNotOwn() {
         ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.updateExerciseType(updatedExerciseTypeTo, USER2_ID));
