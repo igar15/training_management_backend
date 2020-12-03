@@ -1,5 +1,7 @@
 package com.igar15.training_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igar15.training_management.entity.abstracts.AbstractBaseEntity;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -13,11 +15,13 @@ import java.time.LocalDateTime;
 @Table(name = "workouts")
 public class Workout extends AbstractBaseEntity {
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column(name = "date_time")
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
