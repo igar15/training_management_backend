@@ -42,8 +42,10 @@ create table exercises (
     quantity integer not null,
     exercise_type_id bigint not null,
     workout_id bigint not null,
+    user_id bigint not null,
     foreign key (exercise_type_id) references exercise_types (id) on delete cascade,
-    foreign key (workout_id) references workouts (id) on delete cascade
+    foreign key (workout_id) references workouts (id) on delete cascade,
+    foreign key (user_id) references users (id) on delete cascade
 );
 
 create table password_reset_tokens (

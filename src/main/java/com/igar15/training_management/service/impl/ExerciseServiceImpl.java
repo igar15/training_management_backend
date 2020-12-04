@@ -5,6 +5,7 @@ import com.igar15.training_management.entity.ExerciseType;
 import com.igar15.training_management.entity.Workout;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.ExerciseRepository;
+import com.igar15.training_management.repository.UserRepository;
 import com.igar15.training_management.service.ExerciseService;
 import com.igar15.training_management.service.ExerciseTypeService;
 import com.igar15.training_management.service.WorkoutService;
@@ -27,14 +28,17 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Autowired
     private ExerciseTypeService exerciseTypeService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public List<Exercise> getExercisesByWorkoutIdAndUserId(long workoutId, long userId) {
-        return exerciseRepository.findAllByWorkout_IdAndWorkout_User_Id(workoutId, userId);
+        return exerciseRepository.findAllByWorkout_IdAndUser_Id(workoutId, userId);
     }
 
     @Override
     public Exercise getExerciseByIdAndUserId(long id, long userId) {
-        return exerciseRepository.findByIdAndWorkout_User_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
+        return exerciseRepository.findByIdAndUser_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
     }
 
     @Override
@@ -43,6 +47,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         Workout workout = workoutService.getWorkoutById(exerciseTo.getWorkoutId(), userId);
         ExerciseType exerciseType = exerciseTypeService.getExerciseTypeById(exerciseTo.getExerciseTypeId(), userId);
         Exercise exercise = new Exercise();
+        exercise.setUser(userRepository.getOne(userId));
         exercise.setWorkout(workout);
         exercise.setExerciseType(exerciseType);
         exercise.setQuantity(exerciseTo.getQuantity());
@@ -54,7 +59,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public Exercise updateExercise(ExerciseTo exerciseTo, long userId) {
         Assert.notNull(exerciseTo, "Exercise must not be null");
         long id = exerciseTo.getId();
-        Exercise exercise = exerciseRepository.findByIdAndWorkout_User_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
+        Exercise exercise = exerciseRepository.findByIdAndUser_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
         exercise.setQuantity(exerciseTo.getQuantity());
         exerciseRepository.save(exercise);
         return exercise;

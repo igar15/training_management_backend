@@ -29,14 +29,21 @@ public class Exercise extends AbstractBaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Workout workout;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
+
     public Exercise() {
     }
 
-    public Exercise(Long id, int quantity, ExerciseType exerciseType, Workout workout) {
+    public Exercise(Long id, int quantity, ExerciseType exerciseType, Workout workout, User user) {
         super(id);
         this.quantity = quantity;
         this.exerciseType = exerciseType;
         this.workout = workout;
+        this.user = user;
     }
 
     public int getQuantity() {
@@ -61,6 +68,14 @@ public class Exercise extends AbstractBaseEntity {
 
     public void setWorkout(Workout workout) {
         this.workout = workout;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
