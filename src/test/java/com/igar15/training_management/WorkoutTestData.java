@@ -20,6 +20,7 @@ public class WorkoutTestData {
     public static final long USER1_WORKOUT1_ID = 1009;
     public static final long USER1_WORKOUT2_ID = 1010;
     public static final long USER1_WORKOUT3_ID = 1011;
+    public static final long ADMIN_WORKOUT1_ID = 1012;
 
     public static final Workout USER1_WORKOUT1 = new Workout(USER1_WORKOUT1_ID, LocalDateTime.parse("2020-11-28 13:00:00", DATE_TIME_FORMATTER));
     public static final Workout USER1_WORKOUT2 = new Workout(USER1_WORKOUT2_ID, LocalDateTime.parse("2020-11-28 18:00:00", DATE_TIME_FORMATTER));

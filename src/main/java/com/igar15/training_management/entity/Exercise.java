@@ -38,6 +38,11 @@ public class Exercise extends AbstractBaseEntity {
     public Exercise() {
     }
 
+    public Exercise(Long id, int quantity) {
+        super(id);
+        this.quantity = quantity;
+    }
+
     public Exercise(Long id, int quantity, ExerciseType exerciseType, Workout workout, User user) {
         super(id);
         this.quantity = quantity;

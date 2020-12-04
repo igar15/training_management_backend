@@ -2,7 +2,7 @@ package com.igar15.training_management.to;
 
 public class ExerciseTo {
 
-    private long id;
+    private Long id;
     private int quantity;
     private long workoutId;
     private long exerciseTypeId;
@@ -10,18 +10,18 @@ public class ExerciseTo {
     public ExerciseTo() {
     }
 
-    public ExerciseTo(long id, int quantity, long workoutId, long exerciseTypeId) {
+    public ExerciseTo(Long id, int quantity, long workoutId, long exerciseTypeId) {
         this.id = id;
         this.quantity = quantity;
         this.workoutId = workoutId;
         this.exerciseTypeId = exerciseTypeId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

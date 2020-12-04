@@ -11,6 +11,7 @@ public class ExerciseTypeTestData {
     public static final long USER1_EXERCISE_TYPE1_ID = 1004;
     public static final long USER1_EXERCISE_TYPE2_ID = 1005;
     public static final long USER1_EXERCISE_TYPE3_ID = 1006;
+    public static final long ADMIN_EXERCISE_TYPE1_ID = 1007;
 
     public static final ExerciseType USER1_EXERCISE_TYPE1 = new ExerciseType(USER1_EXERCISE_TYPE1_ID, "user1 exercise type 1", Measure.TIMES);
     public static final ExerciseType USER1_EXERCISE_TYPE2 = new ExerciseType(USER1_EXERCISE_TYPE2_ID, "user1 exercise type 2", Measure.SECONDS);
