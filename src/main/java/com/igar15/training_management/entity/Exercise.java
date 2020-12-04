@@ -1,5 +1,6 @@
 package com.igar15.training_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igar15.training_management.entity.abstracts.AbstractBaseEntity;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -17,18 +18,20 @@ public class Exercise extends AbstractBaseEntity {
     @Min(1)
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "exercise_type_id")
     @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ExerciseType exerciseType;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workout_id")
     @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Workout workout;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull

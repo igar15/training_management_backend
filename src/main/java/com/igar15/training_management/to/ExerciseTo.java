@@ -4,13 +4,13 @@ public class ExerciseTo {
 
     private Long id;
     private int quantity;
-    private long workoutId;
-    private long exerciseTypeId;
+    private Long workoutId;
+    private Long exerciseTypeId;
 
     public ExerciseTo() {
     }
 
-    public ExerciseTo(Long id, int quantity, long workoutId, long exerciseTypeId) {
+    public ExerciseTo(Long id, int quantity, Long workoutId, Long exerciseTypeId) {
         this.id = id;
         this.quantity = quantity;
         this.workoutId = workoutId;
@@ -33,19 +33,19 @@ public class ExerciseTo {
         this.quantity = quantity;
     }
 
-    public long getWorkoutId() {
+    public Long getWorkoutId() {
         return workoutId;
     }
 
-    public void setWorkoutId(long workoutId) {
+    public void setWorkoutId(Long workoutId) {
         this.workoutId = workoutId;
     }
 
-    public long getExerciseTypeId() {
+    public Long getExerciseTypeId() {
         return exerciseTypeId;
     }
 
-    public void setExerciseTypeId(long exerciseTypeId) {
+    public void setExerciseTypeId(Long exerciseTypeId) {
         this.exerciseTypeId = exerciseTypeId;
     }
 }
