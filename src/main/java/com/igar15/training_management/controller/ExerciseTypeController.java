@@ -1,8 +1,11 @@
 package com.igar15.training_management.controller;
 
 import com.igar15.training_management.entity.ExerciseType;
+import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.service.ExerciseTypeService;
 import com.igar15.training_management.to.ExerciseTypeTo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,23 +17,31 @@ import java.util.List;
 @RequestMapping("/users")
 public class ExerciseTypeController {
 
+    private final Logger log = LoggerFactory.getLogger(ExerciseTypeController.class);
+
     @Autowired
     private ExerciseTypeService exerciseTypeService;
 
     @GetMapping("/{userId}/exerciseTypes/{id}")
     public ResponseEntity<ExerciseType> getExerciseType(@PathVariable("userId") long userId, @PathVariable("id") long id) {
+        log.info("get exercise type id={} for user id={}", id, userId);
         ExerciseType exerciseType = exerciseTypeService.getExerciseTypeById(id, userId);
         return new ResponseEntity<>(exerciseType, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/exerciseTypes")
     public ResponseEntity<List<ExerciseType>> getExerciseTypes(@PathVariable("userId") long userId) {
+        log.info("get all exercise types for user with id={}", userId);
         List<ExerciseType> exercisesTypes = exerciseTypeService.getExercisesTypes(userId);
         return new ResponseEntity<>(exercisesTypes, HttpStatus.OK);
     }
 
     @PostMapping("/{userId}/exerciseTypes")
     public ResponseEntity<ExerciseType> createExerciseType(@PathVariable("userId") long userId, @RequestBody ExerciseTypeTo exerciseTypeTo) {
+        if (exerciseTypeTo.getId() != null) {
+            throw new IllegalRequestDataException(exerciseTypeTo + " must be new (id=null)");
+        }
+        log.info("create {} for user id={}", exerciseTypeTo, userId);
         ExerciseType exerciseType = exerciseTypeService.createExerciseType(exerciseTypeTo, userId);
         return new ResponseEntity<>(exerciseType, HttpStatus.OK);
     }
@@ -38,8 +49,9 @@ public class ExerciseTypeController {
     @PutMapping("/{userId}/exerciseTypes/{id}")
     public ResponseEntity<ExerciseType> updateExerciseType(@PathVariable("userId") long userId, @PathVariable("id") Long id, @RequestBody ExerciseTypeTo exerciseTypeTo) {
         if (!id.equals(exerciseTypeTo.getId())) {
-            throw new IllegalArgumentException("ExerciseType must be with id: " + id);
+            throw new IllegalRequestDataException(exerciseTypeTo + " must be with id=" + id);
         }
+        log.info("update {} for user id={}", exerciseTypeTo, userId);
         ExerciseType exerciseType = exerciseTypeService.updateExerciseType(exerciseTypeTo, userId);
         return new ResponseEntity<>(exerciseType, HttpStatus.OK);
     }
@@ -47,9 +59,8 @@ public class ExerciseTypeController {
     @DeleteMapping("/{userId}/exerciseTypes/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteExerciseType(@PathVariable("userId") long userId, @PathVariable("id") long id) {
+        log.info("delete exercise type id={} for user id={}", id, userId);
         exerciseTypeService.deleteExerciseType(id, userId);
     }
-
-
 
 }

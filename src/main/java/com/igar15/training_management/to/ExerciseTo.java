@@ -48,4 +48,14 @@ public class ExerciseTo {
     public void setExerciseTypeId(Long exerciseTypeId) {
         this.exerciseTypeId = exerciseTypeId;
     }
+
+    @Override
+    public String toString() {
+        return "ExerciseTo{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", workoutId=" + workoutId +
+                ", exerciseTypeId=" + exerciseTypeId +
+                '}';
+    }
 }

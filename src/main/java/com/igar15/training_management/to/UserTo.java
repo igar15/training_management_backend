@@ -3,6 +3,7 @@ package com.igar15.training_management.to;
 
 public class UserTo {
 
+    private Long id;
     private String name;
     private String email;
     private String password;
@@ -10,10 +11,19 @@ public class UserTo {
     public UserTo() {
     }
 
-    public UserTo(String name, String email, String password) {
+    public UserTo(Long id, String name, String email, String password) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -38,5 +48,14 @@ public class UserTo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UserTo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

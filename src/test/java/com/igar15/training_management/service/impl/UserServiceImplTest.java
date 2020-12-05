@@ -107,15 +107,15 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void createUserWithNotValidAttributes() {
-        validateRootCause(() -> userService.createUser(new UserTo(null, "test@test.com", "123456")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("", "test@test.com", "123456")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("a", "test@test.com", "123456")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("test", null, "123456")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("test", "", "123456")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("test", "testtest.com", "123456")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("test", "test@test.com", null)), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("test", "test@test.com", "")), ConstraintViolationException.class);
-        validateRootCause(() -> userService.createUser(new UserTo("test", "test@test.com", "1234")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, null, "test@test.com", "123456")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "", "test@test.com", "123456")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "a", "test@test.com", "123456")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "test", null, "123456")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "", "123456")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "testtest.com", "123456")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "test@test.com", null)), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "test@test.com", "")), ConstraintViolationException.class);
+        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "test@test.com", "1234")), ConstraintViolationException.class);
     }
 
     @Test

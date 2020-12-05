@@ -1,6 +1,5 @@
 package com.igar15.training_management.to;
 
-import com.igar15.training_management.entity.enums.Measure;
 
 public class PasswordResetModel {
 
@@ -23,4 +22,10 @@ public class PasswordResetModel {
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "PasswordResetModel{" +
+                "token='" + token + '\'' +
+                '}';
+    }
 }

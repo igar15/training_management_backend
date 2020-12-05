@@ -38,4 +38,13 @@ public class ExerciseTypeTo {
     public void setMeasure(String measure) {
         this.measure = measure;
     }
+
+    @Override
+    public String toString() {
+        return "ExerciseTypeTo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", measure='" + measure + '\'' +
+                '}';
+    }
 }

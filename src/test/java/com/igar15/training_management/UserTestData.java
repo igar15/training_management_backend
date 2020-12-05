@@ -32,7 +32,7 @@ public class UserTestData {
     public static final Page<User> PAGE1_SIZE2 = new PageImpl<>(List.of(USER3, ADMIN), PAGEABLE_PAGE1_SIZE2, 4);
 
     public static UserTo getNewUserTo() {
-        return new UserTo("new user", "newemail@test.com", "newpassword");
+        return new UserTo(null, "new user", "newemail@test.com", "newpassword");
     }
 
     public static User getNewUser() {
@@ -40,7 +40,7 @@ public class UserTestData {
     }
 
     public static UserTo getUpdatedUserTo() {
-        return new UserTo("user1 updated", "user1@test.ru updated", "123456 updated");
+        return new UserTo(USER1_ID, "user1 updated", "user1@test.ru updated", "123456 updated");
     }
 
     public static User getUpdatedUser() {

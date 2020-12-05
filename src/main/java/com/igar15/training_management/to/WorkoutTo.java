@@ -30,4 +30,12 @@ public class WorkoutTo {
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
+
+    @Override
+    public String toString() {
+        return "WorkoutTo{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                '}';
+    }
 }
