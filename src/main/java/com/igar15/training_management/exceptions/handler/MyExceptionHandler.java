@@ -1,5 +1,6 @@
-package com.igar15.training_management.exceptions;
+package com.igar15.training_management.exceptions.handler;
 
+import com.igar15.training_management.exceptions.*;
 import com.igar15.training_management.to.MyHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
