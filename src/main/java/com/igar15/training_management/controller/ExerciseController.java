@@ -37,9 +37,12 @@ public class ExerciseController {
     }
 
     @PostMapping("/{userId}/workouts/{workoutId}/exercises")
-    public ResponseEntity<Exercise> createExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") long workoutId, @RequestBody ExerciseTo exerciseTo) {
+    public ResponseEntity<Exercise> createExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @RequestBody ExerciseTo exerciseTo) {
         if (exerciseTo.getId() != null) {
             throw new IllegalRequestDataException(exerciseTo + " must be new (id=null)");
+        }
+        if (!workoutId.equals(exerciseTo.getWorkoutId())) {
+            throw new IllegalRequestDataException(exerciseTo + " must be with workout id=" + workoutId);
         }
         log.info("create {} for workout id={} for user id={}", exerciseTo, workoutId, userId);
         Exercise exercise = exerciseService.createExercise(exerciseTo, userId);
@@ -50,6 +53,9 @@ public class ExerciseController {
     public ResponseEntity<Exercise> updateExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @PathVariable("id") Long id, @RequestBody ExerciseTo exerciseTo) {
         if (!id.equals(exerciseTo.getId())) {
             throw new IllegalRequestDataException(exerciseTo + " must be with id=" + id);
+        }
+        if (!workoutId.equals(exerciseTo.getWorkoutId())) {
+            throw new IllegalRequestDataException(exerciseTo + " must be with workout id=" + workoutId);
         }
         log.info("update {} for workout id={} for user id={}", exerciseTo, workoutId, userId);
         Exercise exercise = exerciseService.updateExercise(exerciseTo, userId);
