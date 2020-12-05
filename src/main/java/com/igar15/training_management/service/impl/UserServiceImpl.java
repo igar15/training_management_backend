@@ -4,7 +4,6 @@ import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.entity.enums.Role;
 import com.igar15.training_management.exceptions.EmailExistException;
-import com.igar15.training_management.exceptions.TokenNotFoundException;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
@@ -111,7 +110,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(String token, String password) {
         jwtTokenProvider.isTokenExpired(token);
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new TokenNotFoundException("Such token not found"));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found token with token: " + token));
         //need to encrypt password
         User user = passwordResetToken.getUser();
         user.setPassword(password);

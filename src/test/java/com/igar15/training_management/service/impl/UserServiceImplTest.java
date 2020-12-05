@@ -8,7 +8,6 @@ import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.EmailExistException;
-import com.igar15.training_management.exceptions.TokenNotFoundException;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
@@ -179,12 +178,12 @@ class UserServiceImplTest extends AbstractServiceTest {
     @Test
     void requestPasswordResetAndResetPassword() {
         userService.requestPasswordReset(USER1.getEmail());
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new TokenNotFoundException("Token not found"));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found token with user email: " + USER1.getEmail()));
         userService.resetPassword(passwordResetToken.getToken(), "newpassword");
         User user = userService.getUserById(USER1_ID);
         Assertions.assertEquals("newpassword", user.getPassword());
-        Assertions.assertThrows(TokenNotFoundException.class, () -> passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new TokenNotFoundException("Token not found")));
-        Assertions.assertThrows(TokenNotFoundException.class, () -> passwordResetTokenRepository.findByToken(passwordResetToken.getToken()).orElseThrow(() -> new TokenNotFoundException("Token not found")));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found token with user email: " + USER1.getEmail())));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByToken(passwordResetToken.getToken()).orElseThrow(() -> new MyEntityNotFoundException("Not found token :" + passwordResetToken.getToken())));
     }
 
 
