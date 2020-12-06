@@ -1,19 +1,25 @@
 package com.igar15.training_management.controller;
 
+import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.IllegalRequestDataException;
+import com.igar15.training_management.security.UserPrincipal;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.MyHttpResponse;
 import com.igar15.training_management.to.PasswordResetModel;
 import com.igar15.training_management.to.UserTo;
+import com.igar15.training_management.utils.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +35,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody UserTo userTo) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userTo.getEmail(), userTo.getPassword()));
+        User loginUser = userService.getUserByEmail(userTo.getEmail());
+        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
+        HttpHeaders jwtHeader = new HttpHeaders();
+        jwtHeader.add(SecurityConstant.JWT_AUTHORIZATION_TOKEN_HEADER, jwtTokenProvider.generateAuthorizationToken(userPrincipal));
+        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {

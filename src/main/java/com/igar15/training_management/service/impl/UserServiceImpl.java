@@ -7,6 +7,7 @@ import com.igar15.training_management.exceptions.EmailExistException;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
+import com.igar15.training_management.security.UserPrincipal;
 import com.igar15.training_management.service.EmailService;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.UserTo;
@@ -14,12 +15,17 @@ import com.igar15.training_management.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 
+
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -33,7 +39,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        // add validateAttempt() method
+        // add save user after validate
+        return new UserPrincipal(user);
+    }
 
     @Override
     public Page<User> getUsers(Pageable pageable) {
@@ -61,11 +77,10 @@ public class UserServiceImpl implements UserService {
         if (email != null) {
             userTo.setEmail(email.toLowerCase());
         }
-        // need to encrypt password
         User user = new User();
         user.setName(userTo.getName());
         user.setEmail(userTo.getEmail());
-        user.setPassword(userTo.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(userTo.getPassword()));
         user.setEmailVerificationToken(jwtTokenProvider.generateEmailVerificationToken(user.getEmail()));
         user.setRole(Role.ROLE_USER);
         userRepository.save(user);
@@ -111,9 +126,8 @@ public class UserServiceImpl implements UserService {
     public void resetPassword(String token, String password) {
         jwtTokenProvider.isTokenExpired(token);
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found token with token: " + token));
-        //need to encrypt password
         User user = passwordResetToken.getUser();
-        user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
         passwordResetTokenRepository.delete(passwordResetToken);
     }
