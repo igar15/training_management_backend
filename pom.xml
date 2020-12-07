@@ -64,6 +64,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+<!--		Google Guava Library-->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>30.0-jre</version>
+		</dependency>
+
 <!--		Test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

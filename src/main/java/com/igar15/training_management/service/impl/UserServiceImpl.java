@@ -9,6 +9,7 @@ import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
 import com.igar15.training_management.security.UserPrincipal;
 import com.igar15.training_management.service.EmailService;
+import com.igar15.training_management.service.LoginAttemptService;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.UserTo;
 import com.igar15.training_management.utils.JwtTokenProvider;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
 
 
 @Service
@@ -42,13 +44,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private LoginAttemptService loginAttemptService;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
-        // add validateAttempt() method
-        // add save user after validate
-        return new UserPrincipal(user);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (!optionalUser.isPresent()) {
+            throw new UsernameNotFoundException("Not found user with email: " + email);
+        }
+        else {
+            User user = optionalUser.get();
+            validateLoginAttempt(user);
+            return new UserPrincipal(user);
+        }
     }
 
     @Override
@@ -100,6 +110,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUser(long id) {
         User user = getUserById(id);
         userRepository.delete(user);
+        loginAttemptService.evictUserFromLoginAttemptCache(user.getEmail());
     }
 
     @Override
@@ -130,5 +141,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
         passwordResetTokenRepository.delete(passwordResetToken);
+    }
+
+    private void validateLoginAttempt(User user) {
+        if (user.isNonLocked()) {
+            if (loginAttemptService.hasExceededMaxAttempts(user.getEmail())) {
+                user.setNonLocked(false);
+                userRepository.save(user);
+            }
+        }
+        else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getEmail());
+        }
     }
 }
