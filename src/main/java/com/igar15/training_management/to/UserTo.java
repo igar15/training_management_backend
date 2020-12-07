@@ -1,11 +1,25 @@
 package com.igar15.training_management.to;
 
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class UserTo {
 
     private Long id;
+
+    @NotBlank(message = "Name must not be blank")
+    @Size(min = 2, max = 100, message = "Name length must be between 2 and 100 characters")
     private String name;
+
+    @Email(message = "Email must accord email pattern")
+    @NotBlank(message = "Email must not be blank")
+    @Size(max = 100, message = "Email length must be 100 characters max")
     private String email;
+
+    @NotBlank(message = "Password must not be blank")
+    @Size(min = 5, max = 32, message = "Password length must be between 5 and 32 characters")
     private String password;
 
     public UserTo() {

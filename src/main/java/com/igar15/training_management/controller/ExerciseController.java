@@ -4,13 +4,16 @@ import com.igar15.training_management.entity.Exercise;
 import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.service.ExerciseService;
 import com.igar15.training_management.to.ExerciseTo;
+import com.igar15.training_management.utils.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,7 +40,8 @@ public class ExerciseController {
     }
 
     @PostMapping("/{userId}/workouts/{workoutId}/exercises")
-    public ResponseEntity<Exercise> createExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @RequestBody ExerciseTo exerciseTo) {
+    public ResponseEntity<Exercise> createExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @Valid @RequestBody ExerciseTo exerciseTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (exerciseTo.getId() != null) {
             throw new IllegalRequestDataException(exerciseTo + " must be new (id=null)");
         }
@@ -50,7 +54,8 @@ public class ExerciseController {
     }
 
     @PutMapping("/{userId}/workouts/{workoutId}/exercises/{id}")
-    public ResponseEntity<Exercise> updateExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @PathVariable("id") Long id, @RequestBody ExerciseTo exerciseTo) {
+    public ResponseEntity<Exercise> updateExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @PathVariable("id") Long id, @Valid @RequestBody ExerciseTo exerciseTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (!id.equals(exerciseTo.getId())) {
             throw new IllegalRequestDataException(exerciseTo + " must be with id=" + id);
         }

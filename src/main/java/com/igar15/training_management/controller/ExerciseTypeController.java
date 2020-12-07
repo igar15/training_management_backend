@@ -4,13 +4,16 @@ import com.igar15.training_management.entity.ExerciseType;
 import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.service.ExerciseTypeService;
 import com.igar15.training_management.to.ExerciseTypeTo;
+import com.igar15.training_management.utils.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,7 +40,8 @@ public class ExerciseTypeController {
     }
 
     @PostMapping("/{userId}/exerciseTypes")
-    public ResponseEntity<ExerciseType> createExerciseType(@PathVariable("userId") long userId, @RequestBody ExerciseTypeTo exerciseTypeTo) {
+    public ResponseEntity<ExerciseType> createExerciseType(@PathVariable("userId") long userId, @Valid @RequestBody ExerciseTypeTo exerciseTypeTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (exerciseTypeTo.getId() != null) {
             throw new IllegalRequestDataException(exerciseTypeTo + " must be new (id=null)");
         }
@@ -47,7 +51,8 @@ public class ExerciseTypeController {
     }
 
     @PutMapping("/{userId}/exerciseTypes/{id}")
-    public ResponseEntity<ExerciseType> updateExerciseType(@PathVariable("userId") long userId, @PathVariable("id") Long id, @RequestBody ExerciseTypeTo exerciseTypeTo) {
+    public ResponseEntity<ExerciseType> updateExerciseType(@PathVariable("userId") long userId, @PathVariable("id") Long id, @Valid @RequestBody ExerciseTypeTo exerciseTypeTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (!id.equals(exerciseTypeTo.getId())) {
             throw new IllegalRequestDataException(exerciseTypeTo + " must be with id=" + id);
         }

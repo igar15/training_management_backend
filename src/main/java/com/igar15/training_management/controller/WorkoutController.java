@@ -4,6 +4,7 @@ import com.igar15.training_management.entity.Workout;
 import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.service.WorkoutService;
 import com.igar15.training_management.to.WorkoutTo;
+import com.igar15.training_management.utils.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -37,7 +41,8 @@ public class WorkoutController {
     }
 
     @PostMapping("/{userId}/workouts")
-    public ResponseEntity<Workout> createWorkout(@PathVariable("userId") long userId, @RequestBody WorkoutTo workoutTo) {
+    public ResponseEntity<Workout> createWorkout(@PathVariable("userId") long userId, @Valid @RequestBody WorkoutTo workoutTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (workoutTo.getId() != null) {
             throw new IllegalRequestDataException(workoutTo + " must be new (id=null)");
         }
@@ -47,7 +52,8 @@ public class WorkoutController {
     }
 
     @PutMapping("/{userId}/workouts/{id}")
-    public ResponseEntity<Workout> updateWorkout(@PathVariable("userId") long userId, @PathVariable("id") Long id, @RequestBody WorkoutTo workoutTo) {
+    public ResponseEntity<Workout> updateWorkout(@PathVariable("userId") long userId, @PathVariable("id") Long id, @Valid @RequestBody WorkoutTo workoutTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (!id.equals(workoutTo.getId())) {
             throw new IllegalRequestDataException(workoutTo + " must be with id=" + id);
         }

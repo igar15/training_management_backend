@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User updateUser(long id, UserTo userTo) {
+        Assert.notNull(userTo, "User must not be null");
         User user = userRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Not found user with id: " + id));
         user.setName(userTo.getName());
         userRepository.save(user);
@@ -115,6 +116,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void verifyEmailToken(String token) {
+        Assert.notNull(token, "Email verification token must not be null");
         User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found user with such token"));
         jwtTokenProvider.isTokenExpired(token);
         user.setEmailVerificationToken(null);
@@ -124,6 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void requestPasswordReset(String email) {
+        Assert.notNull(email, "Email must not be null");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new MyEntityNotFoundException("Not found user with email: " + email));
         String token = jwtTokenProvider.generatePasswordResetToken(email);
         PasswordResetToken passwordResetToken = new PasswordResetToken();

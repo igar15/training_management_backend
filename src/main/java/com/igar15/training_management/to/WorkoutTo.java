@@ -1,10 +1,13 @@
 package com.igar15.training_management.to;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class WorkoutTo {
 
     private Long id;
+
+    @NotNull(message = "DateTime must not be null")
     private LocalDateTime dateTime;
 
     public WorkoutTo() {

@@ -1,10 +1,19 @@
 package com.igar15.training_management.to;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class ExerciseTo {
 
     private Long id;
+
+    @Min(value = 1, message = "Quantity must be more than zero")
     private int quantity;
+
+    @NotNull(message = "Workout ID must not be null")
     private Long workoutId;
+
+    @NotNull(message = "Exercise type ID must not be null")
     private Long exerciseTypeId;
 
     public ExerciseTo() {

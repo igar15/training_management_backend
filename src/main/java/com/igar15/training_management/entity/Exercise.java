@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 public class Exercise extends AbstractBaseEntity {
 
     @Column(name = "quantity")
-    @NotNull
     @Min(1)
     private int quantity;
 

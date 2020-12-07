@@ -9,6 +9,7 @@ import com.igar15.training_management.to.MyHttpResponse;
 import com.igar15.training_management.to.PasswordResetModel;
 import com.igar15.training_management.to.UserTo;
 import com.igar15.training_management.utils.JwtTokenProvider;
+import com.igar15.training_management.utils.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,7 +77,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserTo userTo) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         if (userTo.getId() != null) {
             throw new IllegalRequestDataException(userTo + " must be new (id=null)");
         }
@@ -87,7 +88,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody UserTo userTo) {
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult, "password");
         if (!id.equals(userTo.getId())) {
             throw new IllegalRequestDataException(userTo + " must be with id=" + id);
         }
@@ -120,7 +122,8 @@ public class UserController {
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<MyHttpResponse> resetPassword(@RequestBody PasswordResetModel passwordResetModel) {
+    public ResponseEntity<MyHttpResponse> resetPassword(@Valid @RequestBody PasswordResetModel passwordResetModel, BindingResult bindingResult) {
+        ValidationUtil.validateTo(bindingResult);
         log.info("reset password for {}", passwordResetModel);
         userService.resetPassword(passwordResetModel.getToken(), passwordResetModel.getPassword());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), "Your password was successfully reset");
