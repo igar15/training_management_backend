@@ -18,8 +18,8 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +45,16 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody UserTo userTo) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userTo.getEmail(), userTo.getPassword()));
+        log.info("login user email={}", userTo.getEmail());
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userTo.getEmail(), userTo.getPassword()));
+        } catch (DisabledException e) {
+            throw new DisabledException("User " + userTo.getEmail() + " disabled");
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("User " + userTo.getEmail() + " bad credentials");
+        } catch (LockedException e) {
+            throw new LockedException("User " + userTo.getEmail() + " account is locked");
+        }
         User loginUser = userService.getUserByEmail(userTo.getEmail());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = new HttpHeaders();

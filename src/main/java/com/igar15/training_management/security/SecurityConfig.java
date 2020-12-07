@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyAuthenticationEntryPoint myAuthenticationEntryPoint;
 
+    @Autowired
+    private AuthorizationFilter authorizationFilter;
+
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
@@ -44,18 +50,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, SecurityConstant.LOGIN_URL)
+                .permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstant.SIGN_UP_URL)
                 .permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstant.VERIFICATION_EMAIL_URL)
                 .permitAll()
-                .antMatchers(HttpMethod.GET, SecurityConstant.PASSWORD_RESET_REQUEST_URL )
+                .antMatchers(HttpMethod.GET, SecurityConstant.PASSWORD_RESET_REQUEST_URL)
                 .permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstant.PASSWORD_RESET_URL)
                 .permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().accessDeniedHandler(myAccessDeniedHandler)
                 .authenticationEntryPoint(myAuthenticationEntryPoint).and()
-                .addFilterBefore()
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
@@ -64,8 +72,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

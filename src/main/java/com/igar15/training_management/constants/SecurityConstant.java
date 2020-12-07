@@ -10,6 +10,7 @@ public class SecurityConstant {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String JWT_AUTHORIZATION_TOKEN_HEADER = "Authorization-Token";
     public static final String ROLES = "roles";
+    public static final String LOGIN_URL = "/users/login";
     public static final String SIGN_UP_URL = "/users";
     public static final String VERIFICATION_EMAIL_URL = "/users/email-verification";
     public static final String PASSWORD_RESET_REQUEST_URL = "/users/password-reset-request";

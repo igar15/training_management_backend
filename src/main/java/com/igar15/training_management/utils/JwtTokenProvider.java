@@ -8,8 +8,11 @@ import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,14 +67,23 @@ public class JwtTokenProvider {
     }
 
     public boolean isTokenValid(String userEmail, String token) {
-        JWTVerifier jwtVerifier = getJWTVerifier();
         return !userEmail.isEmpty() && !isTokenExpired(token);
+    }
+
+    public List<GrantedAuthority> getAuthoritiesFromToken(String token) {
+        String[] claims = getClaimsFromToken(token);
+        return Arrays.stream(claims).map(claim -> new SimpleGrantedAuthority(claim)).collect(Collectors.toList());
     }
 
     private String[] getClaimsFromUser(UserPrincipal userPrincipal) {
         List<String> authorities = userPrincipal.getAuthorities().stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.toList());
         return authorities.toArray(new String[0]);
+    }
+
+    private String[] getClaimsFromToken(String token) {
+        JWTVerifier verifier = getJWTVerifier();
+        return verifier.verify(token).getClaim(SecurityConstant.ROLES).asArray(String.class);
     }
 
     private JWTVerifier getJWTVerifier() {
