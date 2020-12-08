@@ -130,4 +130,11 @@ public class UserController {
         return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enableUser(@PathVariable("id") long id, @RequestParam("enabled") boolean enabled) {
+        log.info(enabled ? "enable user id={}" : "disable user id={}", id);
+        userService.enable(id, enabled);
+    }
+
 }

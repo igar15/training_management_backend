@@ -146,6 +146,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         passwordResetTokenRepository.delete(passwordResetToken);
     }
 
+    @Override
+    public void enable(long id, boolean enabled) {
+        User user = getUserById(id);
+        user.setEnabled(enabled);
+        userRepository.save(user);
+    }
+
     private void validateLoginAttempt(User user) {
         if (user.isNonLocked()) {
             if (loginAttemptService.hasExceededMaxAttempts(user.getEmail())) {

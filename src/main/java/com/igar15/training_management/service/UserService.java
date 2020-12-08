@@ -25,4 +25,6 @@ public interface UserService {
 
     void resetPassword(String token, String password);
 
+    void enable(long id, boolean enabled);
+
 }

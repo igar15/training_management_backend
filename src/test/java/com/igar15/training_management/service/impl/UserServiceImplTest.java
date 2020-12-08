@@ -184,6 +184,13 @@ class UserServiceImplTest extends AbstractServiceTest {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByToken(passwordResetToken.getToken()).orElseThrow(() -> new MyEntityNotFoundException("Not found token :" + passwordResetToken.getToken())));
     }
 
+    @Test
+    void enable() {
+        Assertions.assertTrue(userService.getUserById(USER1_ID).isEnabled());
+        userService.enable(USER1_ID, false);
+        Assertions.assertFalse(userService.getUserById(USER1_ID).isEnabled());
+    }
+
 
 
     private String makeExpiredToken() {
