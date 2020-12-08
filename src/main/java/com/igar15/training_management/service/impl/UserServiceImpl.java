@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found user with such token"));
         jwtTokenProvider.isTokenExpired(token);
         user.setEmailVerificationToken(null);
-        user.setEmailVerificationStatus(true);
+        user.setEnabled(true);
         userRepository.save(user);
     }
 

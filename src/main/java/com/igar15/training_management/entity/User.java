@@ -38,8 +38,8 @@ public class User extends AbstractNamedEntity {
     private String emailVerificationToken;
 
     @JsonIgnore
-    @Column(name = "email_verification_status")
-    private boolean emailVerificationStatus = false;
+    @Column(name = "enabled")
+    private boolean enabled = false;
 
     @JsonIgnore
     @Column(name = "is_non_locked")
@@ -55,13 +55,13 @@ public class User extends AbstractNamedEntity {
     public User() {
     }
 
-    public User(Long id, String name, String email, String password, Date registered, String emailVerificationToken, boolean emailVerificationStatus, boolean isNonLocked, Role role) {
+    public User(Long id, String name, String email, String password, Date registered, String emailVerificationToken, boolean enabled, boolean isNonLocked, Role role) {
         super(id, name);
         this.email = email;
         this.password = password;
         this.registered = registered;
         this.emailVerificationToken = emailVerificationToken;
-        this.emailVerificationStatus = emailVerificationStatus;
+        this.enabled = enabled;
         this.isNonLocked = isNonLocked;
         this.role = role;
     }
@@ -105,12 +105,12 @@ public class User extends AbstractNamedEntity {
         this.emailVerificationToken = emailVerificationToken;
     }
 
-    public boolean isEmailVerificationStatus() {
-        return emailVerificationStatus;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setEmailVerificationStatus(boolean emailVerificationStatus) {
-        this.emailVerificationStatus = emailVerificationStatus;
+    public void setEnabled(boolean emailVerificationStatus) {
+        this.enabled = emailVerificationStatus;
     }
 
     public boolean isNonLocked() {
@@ -135,7 +135,7 @@ public class User extends AbstractNamedEntity {
                 "id=" + id +
                 ", name=" + name +
                 ", email='" + email + '\'' +
-                ", emailVerificationStatus=" + emailVerificationStatus +
+                ", emailVerificationStatus=" + enabled +
                 ", isNonLocked=" + isNonLocked +
                 ", role=" + role +
                 '}';

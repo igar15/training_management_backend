@@ -5,7 +5,7 @@ delete from workouts;
 delete from users;
 alter sequence global_seq restart with 1000;
 
-insert into users (name, email, password, registered, email_verification_token, email_verification_status, is_non_locked, role)
+insert into users (name, email, password, registered, email_verification_token, enabled, is_non_locked, role)
 values ('user1', 'user1@test.ru', '123456', '2020-11-29 19:00:00', null, true, true, 'ROLE_USER'),
        ('user2', 'user2@test.ru', '123456', '2020-11-29 19:00:00', '123AAA123', false, true, 'ROLE_USER'),
        ('user3', 'user3@test.ru', '123456', '2020-11-29 19:00:00', null, true, false, 'ROLE_USER'),

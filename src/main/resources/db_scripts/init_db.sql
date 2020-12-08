@@ -14,7 +14,7 @@ create table users (
     password varchar not null,
     registered timestamp default now() not null,
     email_verification_token varchar default null,
-    email_verification_status boolean not null,
+    enabled boolean not null,
     is_non_locked boolean not null,
     role varchar not null
 );
