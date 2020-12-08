@@ -20,7 +20,7 @@ import java.util.Objects;
 @RestControllerAdvice
 public class MyExceptionHandler {
 
-    public static final String ACCOUNT_DISABLED = "Your account has been disabled. If this is an error, please contact administration";
+    public static final String ACCOUNT_DISABLED = "Your account is disabled. You need to verify your email first";
     public static final String INCORRECT_CREDENTIALS = "Username / password incorrect. Please try again";
     public static final String ACCOUNT_LOCKED = "Your account has been locked. Please contact administration";
 
