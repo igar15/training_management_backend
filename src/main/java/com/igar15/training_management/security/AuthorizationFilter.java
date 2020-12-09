@@ -8,6 +8,7 @@ import com.igar15.training_management.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -56,8 +57,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 Optional<User> optionalUser = userRepository.findByEmail(userEmail);
                 if (optionalUser.isPresent()) {
                     User user = optionalUser.get();
-                    if (!user.isNonLocked()) {
-                        throw new LockedException("User " + userEmail + " account is locked");
+                    if (!user.isEnabled()) {
+                        throw new DisabledException("User " + userEmail + " account is disabled");
                     }
 //                    List<GrantedAuthority> authorities = jwtTokenProvider.getAuthoritiesFromToken(token);
                     List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
