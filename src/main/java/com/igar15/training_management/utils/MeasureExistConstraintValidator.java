@@ -16,6 +16,9 @@ public class MeasureExistConstraintValidator implements ConstraintValidator<Meas
 
     @Override
     public boolean isValid(String measure, ConstraintValidatorContext constraintValidatorContext) {
+        if (measure == null) {
+            return true;
+        }
         boolean isMeasureNameValid =  Arrays.stream(Measure.values())
                 .anyMatch(enumMeasure -> enumMeasure.toString().equals(measure.toUpperCase()));
         if (!isMeasureNameValid) {

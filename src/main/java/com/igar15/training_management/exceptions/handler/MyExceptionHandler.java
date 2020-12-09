@@ -4,18 +4,24 @@ import com.igar15.training_management.exceptions.*;
 import com.igar15.training_management.to.MyHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class MyExceptionHandler {
@@ -23,6 +29,7 @@ public class MyExceptionHandler {
     public static final String ACCOUNT_DISABLED = "Your account is disabled. If this is an error, please contact administration";
     public static final String INCORRECT_CREDENTIALS = "Username / password incorrect. Please try again";
     public static final String ACCOUNT_LOCKED = "Your account has been locked. Please contact administration";
+    public static final String HTTP_MESSAGE_NOT_READABLE = "Error while reading request data";
 
 
 
@@ -61,10 +68,20 @@ public class MyExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<MyHttpResponse> methodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
-        HttpMethod supportedMethod = Objects.requireNonNull(exception.getSupportedHttpMethods().iterator().next());
-        String message = "This request method is not allowed on this endpoint. Please send a '" + supportedMethod + "' request";
+        Set<HttpMethod> supportedHttpMethods = exception.getSupportedHttpMethods();
+        String supportedMethods = supportedHttpMethods.stream()
+                .map(method -> method.toString())
+                .collect(Collectors.joining(", "));
+        String message = "This request method is not allowed on this endpoint. Please send a '" + supportedMethods + "' request";
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), HttpStatus.METHOD_NOT_ALLOWED, HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase().toUpperCase(), message);
         return new ResponseEntity<>(myHttpResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class, PropertyReferenceException.class, ValidationException.class})
+    public ResponseEntity<MyHttpResponse> httpMessageNotReadableException(HttpServletRequest request, Exception exception) {
+        log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), HTTP_MESSAGE_NOT_READABLE);
+        return new ResponseEntity<>(myHttpResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DisabledException.class)

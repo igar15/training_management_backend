@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/")
-public class NotExistUrlController implements ErrorController {
+public class NotExistUrlsController implements ErrorController {
 
-    private final Logger log = LoggerFactory.getLogger(NotExistUrlController.class);
+    private final Logger log = LoggerFactory.getLogger(NotExistUrlsController.class);
 
     @Override
     public String getErrorPath() {

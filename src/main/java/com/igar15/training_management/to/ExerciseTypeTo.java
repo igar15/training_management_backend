@@ -13,8 +13,8 @@ public class ExerciseTypeTo {
     @Size(min = 2, max = 100, message = "Name length must be between 2 and 100 characters")
     private String name;
 
-    @NotBlank(message = "Measure must not be blank")
     @MeasureExist
+    @NotBlank(message = "Measure must not be blank")
     private String measure;
 
     public ExerciseTypeTo() {
