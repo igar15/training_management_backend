@@ -13,7 +13,7 @@ public class SecurityConstant {
     public static final String LOGIN_URL = "/users/login";
     public static final String SIGN_UP_URL = "/users";
     public static final String VERIFICATION_EMAIL_URL = "/users/email-verification";
-    public static final String PASSWORD_RESET_REQUEST_URL = "/users/password-reset-request";
+    public static final String PASSWORD_RESET_REQUEST_URL = "/users/password-reset-request/**";
     public static final String PASSWORD_RESET_URL = "/users/resetPassword";
     public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this page";
     public static final String FORBIDDEN_MESSAGE = "You need to log in to access this page";
