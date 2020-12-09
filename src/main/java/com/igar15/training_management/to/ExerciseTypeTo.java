@@ -1,5 +1,7 @@
 package com.igar15.training_management.to;
 
+import com.igar15.training_management.utils.MeasureExist;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -12,6 +14,7 @@ public class ExerciseTypeTo {
     private String name;
 
     @NotBlank(message = "Measure must not be blank")
+    @MeasureExist
     private String measure;
 
     public ExerciseTypeTo() {
