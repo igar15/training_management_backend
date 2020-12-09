@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -19,7 +20,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +28,7 @@ public class MyExceptionHandler {
 
     public static final String ACCOUNT_DISABLED = "Your account is disabled. If this is an error, please contact administration";
     public static final String INCORRECT_CREDENTIALS = "Username / password incorrect. Please try again";
+    public static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
     public static final String ACCOUNT_LOCKED = "Your account has been locked. Please contact administration";
     public static final String HTTP_MESSAGE_NOT_READABLE = "Error while reading request data";
 
@@ -96,6 +97,14 @@ public class MyExceptionHandler {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), INCORRECT_CREDENTIALS);
         return new ResponseEntity<>(myHttpResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<MyHttpResponse> accessDeniedException(HttpServletRequest request, AccessDeniedException exception) {
+        log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), NOT_ENOUGH_PERMISSION);
+        return new ResponseEntity<>(myHttpResponse, HttpStatus.BAD_REQUEST);
+
     }
 
     @ExceptionHandler(LockedException.class)

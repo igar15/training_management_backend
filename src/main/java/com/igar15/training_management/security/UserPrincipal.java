@@ -12,8 +12,11 @@ public class UserPrincipal implements UserDetails {
 
     private User user;
 
+    private long id;
+
     public UserPrincipal(User user) {
         this.user = user;
+        this.id = user.getId();
     }
 
     @Override
@@ -49,5 +52,13 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.isEnabled();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

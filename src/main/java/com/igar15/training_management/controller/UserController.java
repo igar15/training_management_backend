@@ -19,11 +19,16 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 
 @RestController
@@ -62,6 +67,7 @@ public class UserController {
         return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {
         log.info("get user id={}", id);
@@ -70,6 +76,7 @@ public class UserController {
     }
 
     @GetMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Page<User>> getUsers(@SortDefault("email") Pageable pageable) {
         log.info("get all users with pagination ( {} )", pageable);
         Page<User> users = userService.getUsers(pageable);
@@ -130,6 +137,7 @@ public class UserController {
         return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void enableUser(@PathVariable("id") long id, @RequestParam("enabled") boolean enabled) {
