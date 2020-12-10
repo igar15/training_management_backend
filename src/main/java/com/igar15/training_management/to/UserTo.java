@@ -5,9 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class UserTo {
-
-    private Long id;
+public class UserTo extends AbstractBaseTo {
 
     @NotBlank(message = "Name must not be blank")
     @Size(min = 2, max = 100, message = "Name length must be between 2 and 100 characters")
@@ -26,18 +24,10 @@ public class UserTo {
     }
 
     public UserTo(Long id, String name, String email, String password) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.email = email;
         this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -3,9 +3,7 @@ package com.igar15.training_management.to;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class WorkoutTo {
-
-    private Long id;
+public class WorkoutTo extends AbstractBaseTo {
 
     @NotNull(message = "DateTime must not be null")
     private LocalDateTime dateTime;
@@ -14,16 +12,8 @@ public class WorkoutTo {
     }
 
     public WorkoutTo(Long id, LocalDateTime dateTime) {
-        this.id = id;
+        super(id);
         this.dateTime = dateTime;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {

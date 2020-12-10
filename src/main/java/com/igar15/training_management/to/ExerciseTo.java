@@ -3,9 +3,8 @@ package com.igar15.training_management.to;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class ExerciseTo {
+public class ExerciseTo extends AbstractBaseTo {
 
-    private Long id;
 
     @Min(value = 1, message = "Quantity must be more than zero")
     private int quantity;
@@ -20,18 +19,10 @@ public class ExerciseTo {
     }
 
     public ExerciseTo(Long id, int quantity, Long workoutId, Long exerciseTypeId) {
-        this.id = id;
+        super(id);
         this.quantity = quantity;
         this.workoutId = workoutId;
         this.exerciseTypeId = exerciseTypeId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getQuantity() {
