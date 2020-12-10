@@ -1,7 +1,7 @@
 package com.igar15.training_management.utils;
 
 import com.igar15.training_management.exceptions.IllegalRequestDataException;
-import com.igar15.training_management.to.AbstractBaseTo;
+import com.igar15.training_management.to.abstracts.AbstractBaseTo;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
@@ -25,6 +25,12 @@ public class ValidationUtil {
     public static void checkOnNew(AbstractBaseTo to) {
         if (to.getId() != null) {
             throw new IllegalRequestDataException(to + " must be new (id=null)");
+        }
+    }
+
+    public static void checkIdTheSame(AbstractBaseTo to, Long id) {
+        if (!id.equals(to.getId())) {
+            throw new IllegalRequestDataException(to + " must be with id=" + id);
         }
     }
 }

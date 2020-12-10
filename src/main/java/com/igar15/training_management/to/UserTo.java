@@ -1,6 +1,8 @@
 package com.igar15.training_management.to;
 
 
+import com.igar15.training_management.to.abstracts.AbstractBaseTo;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

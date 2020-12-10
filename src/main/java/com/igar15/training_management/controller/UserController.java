@@ -96,9 +96,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult, "password");
-        if (!id.equals(userTo.getId())) {
-            throw new IllegalRequestDataException(userTo + " must be with id=" + id);
-        }
+        ValidationUtil.checkIdTheSame(userTo, id);
         log.info("update {} with id={}", userTo, id);
         User user = userService.updateUser(id, userTo);
         return new ResponseEntity<>(user, HttpStatus.OK);

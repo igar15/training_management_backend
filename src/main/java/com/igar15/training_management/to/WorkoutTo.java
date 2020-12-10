@@ -1,5 +1,7 @@
 package com.igar15.training_management.to;
 
+import com.igar15.training_management.to.abstracts.AbstractBaseTo;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 

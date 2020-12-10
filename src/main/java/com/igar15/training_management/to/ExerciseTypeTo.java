@@ -1,5 +1,6 @@
 package com.igar15.training_management.to;
 
+import com.igar15.training_management.to.abstracts.AbstractBaseTo;
 import com.igar15.training_management.utils.MeasureExist;
 
 import javax.validation.constraints.NotBlank;

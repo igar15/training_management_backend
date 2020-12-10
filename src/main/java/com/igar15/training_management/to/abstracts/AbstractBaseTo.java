@@ -1,4 +1,4 @@
-package com.igar15.training_management.to;
+package com.igar15.training_management.to.abstracts;
 
 public abstract class AbstractBaseTo {
 

@@ -57,9 +57,8 @@ public class WorkoutController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<Workout> updateWorkout(@PathVariable("userId") long userId, @PathVariable("id") Long id, @Valid @RequestBody WorkoutTo workoutTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
-        if (!id.equals(workoutTo.getId())) {
-            throw new IllegalRequestDataException(workoutTo + " must be with id=" + id);
-        }
+        ValidationUtil.checkIdTheSame(workoutTo, id);
+        log.info("update {} for user id={}", workoutTo, userId);
         Workout workout = workoutService.updateWorkout(workoutTo, userId);
         return new ResponseEntity<>(workout, HttpStatus.OK);
     }
