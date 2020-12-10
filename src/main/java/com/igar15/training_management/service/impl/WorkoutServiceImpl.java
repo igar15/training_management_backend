@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public Workout createWorkout(WorkoutTo workoutTo, long userId) {
         Assert.notNull(workoutTo, "Workout must not be null");
         LocalDateTime dateTime = workoutTo.getDateTime();
@@ -50,6 +52,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public Workout updateWorkout(WorkoutTo workoutTo, long userId) {
         Assert.notNull(workoutTo, "Workout must not be null");
         LocalDateTime dateTime = workoutTo.getDateTime();

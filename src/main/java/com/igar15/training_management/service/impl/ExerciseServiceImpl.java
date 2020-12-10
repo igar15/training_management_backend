@@ -12,6 +12,7 @@ import com.igar15.training_management.service.WorkoutService;
 import com.igar15.training_management.to.ExerciseTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    @Transactional
     public Exercise createExercise(ExerciseTo exerciseTo, long userId) {
         Assert.notNull(exerciseTo, "Exercise must not be null");
         Workout workout = workoutService.getWorkoutById(exerciseTo.getWorkoutId(), userId);
@@ -56,6 +58,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    @Transactional
     public Exercise updateExercise(ExerciseTo exerciseTo, long userId) {
         Assert.notNull(exerciseTo, "Exercise must not be null");
         long id = exerciseTo.getId();

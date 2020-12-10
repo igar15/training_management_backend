@@ -10,6 +10,7 @@ import com.igar15.training_management.service.ExerciseTypeService;
 import com.igar15.training_management.to.ExerciseTypeTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     }
 
     @Override
+    @Transactional
     public ExerciseType createExerciseType(ExerciseTypeTo exerciseTypeTo, long userId) {
         Assert.notNull(exerciseTypeTo, "Exercise type must not be null");
         String name = exerciseTypeTo.getName();
@@ -52,6 +54,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     }
 
     @Override
+    @Transactional
     public ExerciseType updateExerciseType(ExerciseTypeTo exerciseTypeTo, long userId) {
         Assert.notNull(exerciseTypeTo, "Exercise type must not be null");
         String name = exerciseTypeTo.getName();

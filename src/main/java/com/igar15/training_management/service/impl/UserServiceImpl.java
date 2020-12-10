@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.Optional;
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (!optionalUser.isPresent()) {
@@ -78,6 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public User createUser(UserTo userTo) {
         Assert.notNull(userTo, "User must not be null");
         if (userRepository.findByEmail(userTo.getEmail()).isPresent()) {
@@ -99,6 +102,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public User updateUser(long id, UserTo userTo) {
         Assert.notNull(userTo, "User must not be null");
         User user = userRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Not found user with id: " + id));
@@ -115,6 +119,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void verifyEmailToken(String token) {
         Assert.notNull(token, "Email verification token must not be null");
         User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found user with such token"));
@@ -125,6 +130,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void requestPasswordReset(String email) {
         Assert.notNull(email, "Email must not be null");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new MyEntityNotFoundException("Not found user with email: " + email));
@@ -137,6 +143,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void resetPassword(String token, String password) {
         jwtTokenProvider.isTokenExpired(token);
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found token with token: " + token));
@@ -147,6 +154,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void enable(long id, boolean enabled) {
         User user = getUserById(id);
         user.setEnabled(enabled);
