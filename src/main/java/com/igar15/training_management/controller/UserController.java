@@ -115,8 +115,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured("ROLE_ADMIN")
     public void enableUser(@PathVariable("id") long id, @RequestParam("enabled") boolean enabled) {
         log.info(enabled ? "enable user id={}" : "disable user id={}", id);
         userService.enable(id, enabled);

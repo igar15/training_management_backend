@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class WorkoutController {
     private WorkoutService workoutService;
 
     @GetMapping("/{userId}/workouts/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<Workout> getWorkout(@PathVariable("userId") long userId, @PathVariable("id") long id) {
         log.info("get workout id={} for user id={}", id, userId);
         Workout workout = workoutService.getWorkoutById(id, userId);
@@ -34,6 +36,7 @@ public class WorkoutController {
     }
 
     @GetMapping("/{userId}/workouts")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<Page<Workout>> getWorkouts(@PathVariable("userId") long userId, Pageable pageable) {
         log.info("get all workouts with pagination=( {} ) for user id={}", pageable, userId);
         Page<Workout> workouts = workoutService.getWorkouts(pageable, userId);
@@ -41,6 +44,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/{userId}/workouts")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<Workout> createWorkout(@PathVariable("userId") long userId, @Valid @RequestBody WorkoutTo workoutTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
         if (workoutTo.getId() != null) {
@@ -52,6 +56,7 @@ public class WorkoutController {
     }
 
     @PutMapping("/{userId}/workouts/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<Workout> updateWorkout(@PathVariable("userId") long userId, @PathVariable("id") Long id, @Valid @RequestBody WorkoutTo workoutTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
         if (!id.equals(workoutTo.getId())) {
@@ -63,6 +68,7 @@ public class WorkoutController {
 
     @DeleteMapping("/{userId}/workouts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public void deleteWorkout(@PathVariable("userId") long userId, @PathVariable("id") long id) {
         log.info("delete workout id={} for user id={}", id, userId);
         workoutService.deleteWorkout(id, userId);
