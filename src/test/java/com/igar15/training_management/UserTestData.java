@@ -24,7 +24,7 @@ public class UserTestData {
     public static final User USER1 = new User(USER1_ID, "user1", "user1@test.ru", "123456", Role.ROLE_USER);
     public static final User USER2 = new User(USER2_ID, "user2", "user2@test.ru", "123456", Role.ROLE_USER);
     public static final User USER3 = new User(USER3_ID, "user3", "user3@test.ru", "123456", Role.ROLE_USER);
-    public static final User ADMIN = new User(ADMIN_ID, "admin", "admin@test.ru", "123456", Role.ROLE_ADMIN);
+    public static final User ADMIN = new User(ADMIN_ID, "admin", "admin@test.ru", "$2y$10$mM4j46rI5jEwIa4FjZZUdOCD1VgO0.KovMo4ZDhcS/Tvg8v4aV4TO", Role.ROLE_ADMIN);
 
     public static final Pageable PAGEABLE_PAGE0_SIZE5 = PageRequest.of(0, 5);
     public static final Pageable PAGEABLE_PAGE1_SIZE2 = PageRequest.of(1, 2);

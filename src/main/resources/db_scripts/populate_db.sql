@@ -9,7 +9,7 @@ insert into users (name, email, password, registered, email_verification_token, 
 values ('user1', 'user1@test.ru', '123456', '2020-11-29 19:00:00', null, true, true, 'ROLE_USER'),
        ('user2', 'user2@test.ru', '123456', '2020-11-29 19:00:00', '123AAA123', false, true, 'ROLE_USER'),
        ('user3', 'user3@test.ru', '123456', '2020-11-29 19:00:00', null, true, false, 'ROLE_USER'),
-       ('admin', 'admin@test.ru', '123456', '2020-11-29 19:00:00', null, true, true, 'ROLE_ADMIN');
+       ('admin', 'admin@test.ru', '$2y$10$mM4j46rI5jEwIa4FjZZUdOCD1VgO0.KovMo4ZDhcS/Tvg8v4aV4TO', '2020-11-29 19:00:00', null, true, true, 'ROLE_ADMIN');
 
 insert into exercise_types (name, measure, user_id)
 values ('user1 exercise type 1', 'TIMES', 1000),

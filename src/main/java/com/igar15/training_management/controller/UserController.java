@@ -67,8 +67,8 @@ public class UserController {
         return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {
         log.info("get user id={}", id);
         User user = userService.getUserById(id);
@@ -95,6 +95,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult, "password");
         if (!id.equals(userTo.getId())) {
@@ -106,10 +107,19 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("id") long id) {
         log.info("delete user id={}", id);
         userService.deleteUser(id);
+    }
+
+    @PatchMapping("/{id}")
+    @Secured("ROLE_ADMIN")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enableUser(@PathVariable("id") long id, @RequestParam("enabled") boolean enabled) {
+        log.info(enabled ? "enable user id={}" : "disable user id={}", id);
+        userService.enable(id, enabled);
     }
 
     @GetMapping("/email-verification")
@@ -135,14 +145,6 @@ public class UserController {
         userService.resetPassword(passwordResetModel.getToken(), passwordResetModel.getPassword());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), "Your password was successfully reset");
         return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enableUser(@PathVariable("id") long id, @RequestParam("enabled") boolean enabled) {
-        log.info(enabled ? "enable user id={}" : "disable user id={}", id);
-        userService.enable(id, enabled);
     }
 
 }
