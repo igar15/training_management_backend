@@ -3,6 +3,7 @@ package com.igar15.training_management.controller;
 import com.igar15.training_management.to.MyHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/")
-public class ErrorController implements ErrorController {
+public class MyErrorController implements ErrorController {
 
-    private final Logger log = LoggerFactory.getLogger(ErrorController.class);
+    private final Logger log = LoggerFactory.getLogger(MyErrorController.class);
 
     @Override
     public String getErrorPath() {
