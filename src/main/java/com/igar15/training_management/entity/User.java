@@ -37,11 +37,11 @@ public class User extends AbstractNamedEntity {
     @Column(name = "email_verification_token")
     private String emailVerificationToken;
 
-    @JsonIgnore
+//    @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = false;
 
-    @JsonIgnore
+//    @JsonIgnore
     @Column(name = "is_non_locked")
     private boolean isNonLocked = true;
 
@@ -113,11 +113,11 @@ public class User extends AbstractNamedEntity {
         this.enabled = emailVerificationStatus;
     }
 
-    public boolean isNonLocked() {
+    public boolean getIsNonLocked() {
         return isNonLocked;
     }
 
-    public void setNonLocked(boolean nonLocked) {
+    public void setIsNonLocked(boolean nonLocked) {
         isNonLocked = nonLocked;
     }
 
@@ -135,7 +135,7 @@ public class User extends AbstractNamedEntity {
                 "id=" + id +
                 ", name=" + name +
                 ", email='" + email + '\'' +
-                ", emailVerificationStatus=" + enabled +
+                ", enabled=" + enabled +
                 ", isNonLocked=" + isNonLocked +
                 ", role=" + role +
                 '}';
