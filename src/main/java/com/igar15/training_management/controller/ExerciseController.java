@@ -46,9 +46,7 @@ public class ExerciseController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<Exercise> createExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @Valid @RequestBody ExerciseTo exerciseTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
-        if (exerciseTo.getId() != null) {
-            throw new IllegalRequestDataException(exerciseTo + " must be new (id=null)");
-        }
+        ValidationUtil.checkOnNew(exerciseTo);
         if (!workoutId.equals(exerciseTo.getWorkoutId())) {
             throw new IllegalRequestDataException(exerciseTo + " must be with workout id=" + workoutId);
         }

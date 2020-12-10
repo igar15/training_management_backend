@@ -86,9 +86,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> createUser(@Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
-        if (userTo.getId() != null) {
-            throw new IllegalRequestDataException(userTo + " must be new (id=null)");
-        }
+        ValidationUtil.checkOnNew(userTo);
         log.info("create {}", userTo);
         User user = userService.createUser(userTo);
         return new ResponseEntity<>(user, HttpStatus.OK);

@@ -46,9 +46,7 @@ public class ExerciseTypeController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     public ResponseEntity<ExerciseType> createExerciseType(@PathVariable("userId") long userId, @Valid @RequestBody ExerciseTypeTo exerciseTypeTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
-        if (exerciseTypeTo.getId() != null) {
-            throw new IllegalRequestDataException(exerciseTypeTo + " must be new (id=null)");
-        }
+        ValidationUtil.checkOnNew(exerciseTypeTo);
         log.info("create {} for user id={}", exerciseTypeTo, userId);
         ExerciseType exerciseType = exerciseTypeService.createExerciseType(exerciseTypeTo, userId);
         return new ResponseEntity<>(exerciseType, HttpStatus.OK);
