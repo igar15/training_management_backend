@@ -1,5 +1,8 @@
 package com.igar15.training_management;
 
+import com.fasterxml.classmate.TypeResolver;
+import com.igar15.training_management.to.swaggerTo.SwaggerUserCreateTo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
@@ -17,6 +20,9 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+
+    @Autowired
+    private TypeResolver typeResolver;
 
     Contact contact = new Contact("Igor Sh", "http://www.igar15.com", "igar15@yandex.ru");
 
@@ -40,7 +46,8 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.igar15.training_management"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .additionalModels(typeResolver.resolve(SwaggerUserCreateTo.class));
         return docket;
     }
 

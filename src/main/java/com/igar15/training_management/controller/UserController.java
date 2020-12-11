@@ -2,17 +2,13 @@ package com.igar15.training_management.controller;
 
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.User;
-import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.security.UserPrincipal;
 import com.igar15.training_management.service.UserService;
-import com.igar15.training_management.to.MyHttpResponse;
-import com.igar15.training_management.to.PasswordResetModel;
-import com.igar15.training_management.to.UserTo;
+import com.igar15.training_management.to.*;
+import com.igar15.training_management.to.swaggerTo.SwaggerUserCreateTo;
 import com.igar15.training_management.utils.JwtTokenProvider;
 import com.igar15.training_management.utils.ValidationUtil;
 import io.swagger.annotations.*;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 
 @RestController
@@ -97,6 +90,13 @@ public class UserController {
 
     @PostMapping
     @ApiOperation(value = "The Create User Web Service Endpoint", notes = "${userController.CreateUser.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "userTo",
+                    value = "Json object for creating a new User",
+                    dataTypeClass = SwaggerUserCreateTo.class
+            )
+    })
     public ResponseEntity<User> createUser(@Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
         ValidationUtil.checkOnNew(userTo);
