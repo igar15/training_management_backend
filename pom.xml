@@ -71,6 +71,13 @@
 			<version>30.0-jre</version>
 		</dependency>
 
+<!--		Swagger-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
 <!--		Test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
