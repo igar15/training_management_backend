@@ -62,6 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstant.PASSWORD_RESET_URL)
                 .permitAll()
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**") // this needs for Swagger work
+                .permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().accessDeniedHandler(myAccessDeniedHandler)
                 .authenticationEntryPoint(myAuthenticationEntryPoint).and()
