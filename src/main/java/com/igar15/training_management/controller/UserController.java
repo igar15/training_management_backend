@@ -10,6 +10,9 @@ import com.igar15.training_management.to.PasswordResetModel;
 import com.igar15.training_management.to.UserTo;
 import com.igar15.training_management.utils.JwtTokenProvider;
 import com.igar15.training_management.utils.ValidationUtil;
+import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,7 @@ public class UserController {
 
 
     @PostMapping("/login")
+    @ApiOperation("User login")
     public ResponseEntity<User> login(@RequestBody UserTo userTo) {
         log.info("login user email={}", userTo.getEmail());
         try {
@@ -69,6 +73,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @ApiOperation(value = "The Get User Details Web Service Endpoint", notes = "${userController.GetUser.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {
         log.info("get user id={}", id);
         User user = userService.getUserById(id);
@@ -77,6 +85,9 @@ public class UserController {
 
     @GetMapping
     @Secured("ROLE_ADMIN")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public ResponseEntity<Page<User>> getUsers(@SortDefault("email") Pageable pageable) {
         log.info("get all users with pagination ( {} )", pageable);
         Page<User> users = userService.getUsers(pageable);
@@ -94,6 +105,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult, "password");
         ValidationUtil.checkIdTheSame(userTo, id);
@@ -105,6 +119,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public void deleteUser(@PathVariable("id") long id) {
         log.info("delete user id={}", id);
         userService.deleteUser(id);
@@ -113,6 +130,9 @@ public class UserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured("ROLE_ADMIN")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public void enableUser(@PathVariable("id") long id, @RequestParam("enabled") boolean enabled) {
         log.info(enabled ? "enable user id={}" : "disable user id={}", id);
         userService.enable(id, enabled);
