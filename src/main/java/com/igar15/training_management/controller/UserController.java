@@ -52,7 +52,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    @ApiOperation("User login")
+    @ApiOperation(value = "The User Login Web Service Endpoint", notes = "${userController.Login.ApiOperation.Notes}")
     public ResponseEntity<User> login(@RequestBody UserTo userTo) {
         log.info("login user email={}", userTo.getEmail());
         try {
@@ -85,6 +85,7 @@ public class UserController {
 
     @GetMapping
     @Secured("ROLE_ADMIN")
+    @ApiOperation(value = "The Get Users Details Web Service Endpoint", notes = "${userController.GetUsers.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -95,6 +96,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ApiOperation(value = "The Create User Web Service Endpoint", notes = "${userController.CreateUser.ApiOperation.Notes}")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
         ValidationUtil.checkOnNew(userTo);
@@ -105,6 +107,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @ApiOperation(value = "The Update User Web Service Endpoint", notes = "${userController.UpdateUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -119,6 +122,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "The Delete User Web Service Endpoint", notes = "${userController.DeleteUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -130,6 +134,7 @@ public class UserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured("ROLE_ADMIN")
+    @ApiOperation(value = "The Enable User Web Service Endpoint", notes = "${userController.EnableUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -139,6 +144,7 @@ public class UserController {
     }
 
     @GetMapping("/email-verification")
+    @ApiOperation(value = "The Verify User Email Web Service Endpoint", notes = "${userController.VerifyEmailUser.ApiOperation.Notes}")
     public ResponseEntity<MyHttpResponse> verifyEmailToken(@RequestParam("token") String token) {
         log.info("verify email with token={}", token);
         userService.verifyEmailToken(token);
@@ -147,6 +153,7 @@ public class UserController {
     }
 
     @GetMapping("/password-reset-request/{email}")
+    @ApiOperation(value = "The Request Password Reset Web Service Endpoint", notes = "${userController.RequestPasswordReset.ApiOperation.Notes}")
     public ResponseEntity<MyHttpResponse> requestPasswordReset(@PathVariable("email") String email) {
         log.info("request password reset for email={}", email);
         userService.requestPasswordReset(email);
@@ -155,6 +162,7 @@ public class UserController {
     }
 
     @PostMapping("/resetPassword")
+    @ApiOperation(value = "The Reset Password Web Service Endpoint", notes = "${userController.ResetPassword.ApiOperation.Notes}")
     public ResponseEntity<MyHttpResponse> resetPassword(@Valid @RequestBody PasswordResetModel passwordResetModel, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
         log.info("reset password for {}", passwordResetModel);
