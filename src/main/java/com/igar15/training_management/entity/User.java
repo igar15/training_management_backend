@@ -133,6 +133,12 @@ public class User extends AbstractNamedEntity {
     }
 
     @Override
+    @Schema(example = "John Doe")
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
     public String toString() {
         return "User{" +
                 "id=" + id +

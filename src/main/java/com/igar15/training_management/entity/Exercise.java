@@ -2,6 +2,7 @@ package com.igar15.training_management.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igar15.training_management.entity.abstracts.AbstractBaseEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,6 +16,7 @@ public class Exercise extends AbstractBaseEntity {
 
     @Column(name = "quantity")
     @Min(1)
+    @Schema(example = "15")
     private int quantity;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -84,6 +86,8 @@ public class Exercise extends AbstractBaseEntity {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 
     @Override
     public String toString() {

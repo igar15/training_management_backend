@@ -1,9 +1,7 @@
 package com.igar15.training_management;
 
 import com.fasterxml.classmate.TypeResolver;
-import com.igar15.training_management.to.swaggerTo.SwaggerUserCreateTo;
-import com.igar15.training_management.to.swaggerTo.SwaggerUserLoginTo;
-import com.igar15.training_management.to.swaggerTo.SwaggerUserUpdateTo;
+import com.igar15.training_management.to.swaggerTo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +24,7 @@ public class SwaggerConfig {
     @Autowired
     private TypeResolver typeResolver;
 
-    Contact contact = new Contact("Igor Sh", "http://www.igar15.com", "igar15@yandex.ru");
+    Contact contact = new Contact("Igor Shlyakhtenkov", "http://www.igar15.com", "igar15@yandex.ru");
 
     List<VendorExtension> vendorExtensions = new ArrayList<>();
 
@@ -51,7 +49,11 @@ public class SwaggerConfig {
                 .build()
                 .additionalModels(typeResolver.resolve(SwaggerUserCreateTo.class),
                                     typeResolver.resolve(SwaggerUserLoginTo.class),
-                                    typeResolver.resolve(SwaggerUserUpdateTo.class));
+                                    typeResolver.resolve(SwaggerUserUpdateTo.class),
+                                    typeResolver.resolve(SwaggerExerciseTypeCreateTo.class),
+                                    typeResolver.resolve(SwaggerWorkoutCreateTo.class),
+                                    typeResolver.resolve(SwaggerExerciseCreateTo.class),
+                                    typeResolver.resolve(SwaggerExerciseUpdateTo.class));
         return docket;
     }
 

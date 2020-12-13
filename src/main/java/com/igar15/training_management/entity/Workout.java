@@ -3,6 +3,7 @@ package com.igar15.training_management.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igar15.training_management.entity.abstracts.AbstractBaseEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +20,7 @@ public class Workout extends AbstractBaseEntity {
     @Column(name = "date_time")
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Schema(example = "2020-12-16 15:30")
     private LocalDateTime dateTime;
 
     @JsonIgnore

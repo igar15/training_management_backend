@@ -47,7 +47,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    @ApiOperation(value = "The User Login Web Service Endpoint", notes = "${userController.Login.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.Login.ApiOperation.Value}", notes = "${userController.Login.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "userTo",
@@ -75,7 +75,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
-    @ApiOperation(value = "The Get User Details Web Service Endpoint", notes = "${userController.GetUser.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.GetUser.ApiOperation.Value}", notes = "${userController.GetUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -87,7 +87,7 @@ public class UserController {
 
     @GetMapping
     @Secured("ROLE_ADMIN")
-    @ApiOperation(value = "The Get Users Details Web Service Endpoint", notes = "${userController.GetUsers.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.GetUsers.ApiOperation.Value}", notes = "${userController.GetUsers.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @PostMapping
-    @ApiOperation(value = "The Create User Web Service Endpoint", notes = "${userController.CreateUser.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.CreateUser.ApiOperation.Value}", notes = "${userController.CreateUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "userTo",
@@ -116,7 +116,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
-    @ApiOperation(value = "The Update User Web Service Endpoint", notes = "${userController.UpdateUser.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.UpdateUser.ApiOperation.Value}", notes = "${userController.UpdateUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header"),
             @ApiImplicitParam(
@@ -136,7 +136,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "The Delete User Web Service Endpoint", notes = "${userController.DeleteUser.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.DeleteUser.ApiOperation.Value}", notes = "${userController.DeleteUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -148,7 +148,7 @@ public class UserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured("ROLE_ADMIN")
-    @ApiOperation(value = "The Enable User Web Service Endpoint", notes = "${userController.EnableUser.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.EnableUser.ApiOperation.Value}", notes = "${userController.EnableUser.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
@@ -158,7 +158,7 @@ public class UserController {
     }
 
     @GetMapping("/email-verification")
-    @ApiOperation(value = "The Verify User Email Web Service Endpoint", notes = "${userController.VerifyEmailUser.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.VerifyEmailUser.ApiOperation.Value}", notes = "${userController.VerifyEmailUser.ApiOperation.Notes}")
     public ResponseEntity<MyHttpResponse> verifyEmailToken(@RequestParam("token") String token) {
         log.info("verify email with token={}", token);
         userService.verifyEmailToken(token);
@@ -167,7 +167,7 @@ public class UserController {
     }
 
     @GetMapping("/password-reset-request/{email}")
-    @ApiOperation(value = "The Request Password Reset Web Service Endpoint", notes = "${userController.RequestPasswordReset.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.RequestPasswordReset.ApiOperation.Value}", notes = "${userController.RequestPasswordReset.ApiOperation.Notes}")
     public ResponseEntity<MyHttpResponse> requestPasswordReset(@PathVariable("email") String email) {
         log.info("request password reset for email={}", email);
         userService.requestPasswordReset(email);
@@ -176,7 +176,7 @@ public class UserController {
     }
 
     @PostMapping("/resetPassword")
-    @ApiOperation(value = "The Reset Password Web Service Endpoint", notes = "${userController.ResetPassword.ApiOperation.Notes}")
+    @ApiOperation(value = "${userController.ResetPassword.ApiOperation.Value}", notes = "${userController.ResetPassword.ApiOperation.Notes}")
     @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "passwordResetModel",

@@ -2,6 +2,7 @@ package com.igar15.training_management.to;
 
 import com.igar15.training_management.to.abstracts.AbstractBaseTo;
 import com.igar15.training_management.utils.MeasureExist;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -10,10 +11,12 @@ public class ExerciseTypeTo extends AbstractBaseTo {
 
     @NotBlank(message = "Name must not be blank")
     @Size(min = 2, max = 100, message = "Name length must be between 2 and 100 characters")
+    @Schema(example = "Pushups")
     private String name;
 
     @MeasureExist
     @NotBlank(message = "Measure must not be blank")
+    @Schema(example = "Times")
     private String measure;
 
     public ExerciseTypeTo() {

@@ -13,7 +13,6 @@ public class AbstractNamedEntity extends AbstractBaseEntity {
     @NotBlank
     @Size(min = 2, max = 100)
     @Column(name = "name")
-    @Schema(example = "John Doe")
     protected String name;
 
     public AbstractNamedEntity() {

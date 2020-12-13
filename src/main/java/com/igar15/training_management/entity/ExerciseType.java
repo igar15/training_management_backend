@@ -3,6 +3,7 @@ package com.igar15.training_management.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igar15.training_management.entity.abstracts.AbstractNamedEntity;
 import com.igar15.training_management.entity.enums.Measure;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -48,6 +49,12 @@ public class ExerciseType extends AbstractNamedEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    @Schema(example = "Pushups")
+    public String getName() {
+        return super.getName();
     }
 
     @Override
