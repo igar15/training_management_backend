@@ -1,16 +1,19 @@
 package com.igar15.training_management.entity.abstracts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 
 @MappedSuperclass
+@Schema
 public class AbstractBaseEntity {
 
     @Id
     @Column(name = "id")
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = 1000)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    @Schema(example = "9999")
     protected Long id;
 
     public AbstractBaseEntity() {

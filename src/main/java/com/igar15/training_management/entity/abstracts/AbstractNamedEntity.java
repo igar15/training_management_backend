@@ -1,5 +1,7 @@
 package com.igar15.training_management.entity.abstracts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ public class AbstractNamedEntity extends AbstractBaseEntity {
     @NotBlank
     @Size(min = 2, max = 100)
     @Column(name = "name")
+    @Schema(example = "John Doe")
     protected String name;
 
     public AbstractNamedEntity() {

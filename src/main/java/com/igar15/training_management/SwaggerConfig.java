@@ -2,6 +2,8 @@ package com.igar15.training_management;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.igar15.training_management.to.swaggerTo.SwaggerUserCreateTo;
+import com.igar15.training_management.to.swaggerTo.SwaggerUserLoginTo;
+import com.igar15.training_management.to.swaggerTo.SwaggerUserUpdateTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +49,9 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.igar15.training_management"))
                 .paths(PathSelectors.any())
                 .build()
-                .additionalModels(typeResolver.resolve(SwaggerUserCreateTo.class));
+                .additionalModels(typeResolver.resolve(SwaggerUserCreateTo.class),
+                                    typeResolver.resolve(SwaggerUserLoginTo.class),
+                                    typeResolver.resolve(SwaggerUserUpdateTo.class));
         return docket;
     }
 

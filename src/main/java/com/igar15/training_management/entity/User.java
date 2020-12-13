@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.igar15.training_management.entity.abstracts.AbstractNamedEntity;
 import com.igar15.training_management.entity.enums.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,6 +21,7 @@ public class User extends AbstractNamedEntity {
     @NotBlank
     @Email
     @Size(max = 100)
+    @Schema(example = "john@gmail.com")
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -48,6 +50,7 @@ public class User extends AbstractNamedEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     @NotNull
+    @Schema(example = "ROLE_USER")
     private Role role;
 
 

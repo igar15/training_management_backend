@@ -6,6 +6,8 @@ import com.igar15.training_management.security.UserPrincipal;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.*;
 import com.igar15.training_management.to.swaggerTo.SwaggerUserCreateTo;
+import com.igar15.training_management.to.swaggerTo.SwaggerUserLoginTo;
+import com.igar15.training_management.to.swaggerTo.SwaggerUserUpdateTo;
 import com.igar15.training_management.utils.JwtTokenProvider;
 import com.igar15.training_management.utils.ValidationUtil;
 import io.swagger.annotations.*;
@@ -46,6 +48,13 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "The User Login Web Service Endpoint", notes = "${userController.Login.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "userTo",
+                    value = "Json object for login a User",
+                    dataTypeClass = SwaggerUserLoginTo.class
+            )
+    })
     public ResponseEntity<User> login(@RequestBody UserTo userTo) {
         log.info("login user email={}", userTo.getEmail());
         try {
@@ -109,10 +118,15 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @ApiOperation(value = "The Update User Web Service Endpoint", notes = "${userController.UpdateUser.ApiOperation.Notes}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header"),
+            @ApiImplicitParam(
+                    name = "userTo",
+                    value = "Json object for updating a User",
+                    dataTypeClass = SwaggerUserUpdateTo.class
+            )
     })
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserTo userTo, BindingResult bindingResult) {
-        ValidationUtil.validateTo(bindingResult, "password");
+        ValidationUtil.validateTo(bindingResult, "password", "email");
         ValidationUtil.checkIdTheSame(userTo, id);
         log.info("update {} with id={}", userTo, id);
         User user = userService.updateUser(id, userTo);
@@ -163,6 +177,12 @@ public class UserController {
 
     @PostMapping("/resetPassword")
     @ApiOperation(value = "The Reset Password Web Service Endpoint", notes = "${userController.ResetPassword.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "passwordResetModel",
+                    value = "Json object for reset User password"
+            )
+    })
     public ResponseEntity<MyHttpResponse> resetPassword(@Valid @RequestBody PasswordResetModel passwordResetModel, BindingResult bindingResult) {
         ValidationUtil.validateTo(bindingResult);
         log.info("reset password for {}", passwordResetModel);
