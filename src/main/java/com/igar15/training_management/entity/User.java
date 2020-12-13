@@ -76,6 +76,15 @@ public class User extends AbstractNamedEntity {
         this.role = role;
     }
 
+    public User(Long id, String name, String email, String password, boolean enabled, boolean isNonLocked, Role role) {
+        super(id, name);
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.isNonLocked = isNonLocked;
+        this.role = role;
+    }
+
     public String getEmail() {
         return email;
     }

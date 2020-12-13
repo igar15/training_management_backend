@@ -51,12 +51,10 @@ class UserServiceImplTest extends AbstractServiceTest {
         Page<User> users1 = userService.getUsers(PAGEABLE_PAGE0_SIZE5);
         Page<User> users2 = userService.getUsers(PAGEABLE_PAGE1_SIZE2);
         assertThat(users1)
-                .usingElementComparatorIgnoringFields("registered", "emailVerificationToken",
-                        "enabled", "isNonLocked")
+                .usingElementComparatorIgnoringFields("registered", "emailVerificationToken")
                 .isEqualTo(PAGEO_SIZE5);
         assertThat(users2)
-                .usingElementComparatorIgnoringFields("registered", "emailVerificationToken",
-                        "enabled", "isNonLocked")
+                .usingElementComparatorIgnoringFields("registered", "emailVerificationToken")
                 .isEqualTo(PAGE1_SIZE2);
     }
 
@@ -65,7 +63,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     void getUserById() {
         User user = userService.getUserById(USER1_ID);
         assertThat(user).usingRecursiveComparison()
-                .ignoringFields("registered", "emailVerificationToken", "enabled", "isNonLocked").isEqualTo(USER1);
+                .ignoringFields("registered", "emailVerificationToken").isEqualTo(USER1);
     }
 
     @Test
@@ -77,7 +75,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     void getUserByEmail() {
         User user = userService.getUserByEmail(ADMIN_EMAIL);
         assertThat(user).usingRecursiveComparison()
-                .ignoringFields("registered", "emailVerificationToken", "enabled", "isNonLocked").isEqualTo(ADMIN);
+                .ignoringFields("registered", "emailVerificationToken").isEqualTo(ADMIN);
     }
 
     @Test
@@ -93,9 +91,9 @@ class UserServiceImplTest extends AbstractServiceTest {
         long createdId = createdUser.getId();
         newUser.setId(createdId);
         assertThat(createdUser).usingRecursiveComparison()
-                .ignoringFields("registered", "emailVerificationToken", "emailVerificationStatus", "isNonLocked", "password").isEqualTo(newUser);
+                .ignoringFields("registered", "emailVerificationToken", "password").isEqualTo(newUser);
         assertThat(userService.getUserById(createdId)).usingRecursiveComparison()
-                .ignoringFields("registered", "emailVerificationToken", "emailVerificationStatus", "isNonLocked", "password").isEqualTo(newUser);
+                .ignoringFields("registered", "emailVerificationToken", "password").isEqualTo(newUser);
     }
 
     @Test
@@ -121,7 +119,7 @@ class UserServiceImplTest extends AbstractServiceTest {
         User updatedUserExpected = getUpdatedUser();
         userService.updateUser(USER1_ID, updatedUserTo);
         assertThat(userService.getUserById(USER1_ID)).usingRecursiveComparison()
-                .ignoringFields("registered", "emailVerificationToken", "enabled", "isNonLocked").isEqualTo(updatedUserExpected);
+                .ignoringFields("registered", "emailVerificationToken", "password").isEqualTo(updatedUserExpected);
     }
 
     @Test

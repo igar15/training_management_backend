@@ -7,7 +7,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 @SpringBootTest
 @Sql(scripts = "classpath:db_scripts/populate_db.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class AbstractServiceTest {
+public abstract class AbstractServiceTest {
 
 
     public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> rootExceptionClass) {
