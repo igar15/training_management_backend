@@ -9,13 +9,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
-@Component
 public class JsonUtil {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public <T> List<T> readValues(String json, Class<T> clazz) {
+    private JsonUtil() {
+
+    }
+
+    public static <T> List<T> readValues(String json, Class<T> clazz) {
         ObjectReader reader = objectMapper.readerFor(clazz);
         try {
             return reader.<T>readValues(json).readAll();
@@ -24,7 +26,7 @@ public class JsonUtil {
         }
     }
 
-    public <T> T readValue(String json, Class<T> clazz) {
+    public static <T> T readValue(String json, Class<T> clazz) {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
@@ -32,11 +34,22 @@ public class JsonUtil {
         }
     }
 
-    public <T> String writeValue(T obj) {
+    public static <T> String writeValue(T obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
         }
+    }
+
+    public static <T> List<T> readValuesFromPage(String json, Class<T> clazz) {
+        json = removePageAttributes(json);
+        return readValues(json, clazz);
+    }
+
+    private static String removePageAttributes(String json) {
+        int openSquareBracketIndex = json.indexOf('[');
+        int closeSquareBracketIndex = json.indexOf(']');
+        return json.substring(openSquareBracketIndex, closeSquareBracketIndex + 1);
     }
 }

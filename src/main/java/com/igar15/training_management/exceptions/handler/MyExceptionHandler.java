@@ -1,5 +1,6 @@
 package com.igar15.training_management.exceptions.handler;
 
+import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.exceptions.*;
 import com.igar15.training_management.to.MyHttpResponse;
 import org.slf4j.Logger;
@@ -26,10 +27,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class MyExceptionHandler {
 
-    public static final String ACCOUNT_DISABLED = "Your account is disabled. If this is an error, please contact administration";
-    public static final String INCORRECT_CREDENTIALS = "Username / password incorrect. Please try again";
-    public static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
-    public static final String ACCOUNT_LOCKED = "Your account has been locked. Please contact administration";
     public static final String HTTP_MESSAGE_NOT_READABLE = "Error while reading request data";
 
 
@@ -88,29 +85,29 @@ public class MyExceptionHandler {
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<MyHttpResponse> accountDisabledException(HttpServletRequest request, DisabledException exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
-        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), ACCOUNT_DISABLED);
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), SecurityConstant.ACCOUNT_DISABLED);
         return new ResponseEntity<>(myHttpResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<MyHttpResponse> badCredentialsException(HttpServletRequest request, BadCredentialsException exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
-        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), INCORRECT_CREDENTIALS);
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), SecurityConstant.INCORRECT_CREDENTIALS);
         return new ResponseEntity<>(myHttpResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<MyHttpResponse> accessDeniedException(HttpServletRequest request, AccessDeniedException exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
-        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), NOT_ENOUGH_PERMISSION);
-        return new ResponseEntity<>(myHttpResponse, HttpStatus.BAD_REQUEST);
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.NOT_ENOUGH_PERMISSION);
+        return new ResponseEntity<>(myHttpResponse, HttpStatus.FORBIDDEN);
 
     }
 
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<MyHttpResponse> lockedException(HttpServletRequest request, LockedException exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
-        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(), ACCOUNT_LOCKED);
+        MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(), SecurityConstant.ACCOUNT_LOCKED);
         return new ResponseEntity<>(myHttpResponse, HttpStatus.UNAUTHORIZED);
     }
 

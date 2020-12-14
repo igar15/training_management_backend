@@ -18,6 +18,11 @@ public class SecurityConstant {
     public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this page";
     public static final String FORBIDDEN_MESSAGE = "You need to log in to access this page";
     public static final String OPTIONS_HTTP_METHOD = "Options";
+    public static final String ACCOUNT_DISABLED = "Your account is disabled. If this is an error, please contact administration";
+    public static final String INCORRECT_CREDENTIALS = "Username / password incorrect. Please try again";
+    public static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
+    public static final String ACCOUNT_LOCKED = "Your account has been locked. Please contact administration";
+
 
 
 

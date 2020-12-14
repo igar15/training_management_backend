@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 public class ValidationUtil {
 
+    private ValidationUtil() {
+
+    }
+
     public static void validateTo(BindingResult bindingResult, String... ignoreFields) {
         if (bindingResult.hasErrors()) {
             List<String> ignoreFieldsList = List.of(ignoreFields);

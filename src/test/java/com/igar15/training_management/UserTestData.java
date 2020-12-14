@@ -46,4 +46,12 @@ public class UserTestData {
     public static User getUpdatedUser() {
         return new User(USER1_ID, "user1 updated", "user1@test.ru", "123456", true, true, Role.ROLE_USER);
     }
+
+    public static UserTo getUserToForLogin() {
+        UserTo userTo = new UserTo();
+        userTo.setEmail(USER1.getEmail());
+        userTo.setPassword("123456");
+        return userTo;
+    }
+
 }
