@@ -229,6 +229,13 @@ class UserControllerTest extends AbstractControllerTest {
         Assertions.assertTrue(response.getMessage().contains("NAME MUST NOT BE BLANK"));
         Assertions.assertTrue(response.getMessage().contains("PASSWORD MUST NOT BE BLANK"));
 
+        newUserTo = getNewUserTo();
+        newUserTo.setId(2000L);
+        resultActions = getResultActions(newUserTo);
+        response = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(response).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(USER_MUST_BE_NEW_RESPONSE);
+
     }
 
     private ResultActions getResultActions(UserTo newUserTo) throws Exception {
@@ -239,11 +246,34 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser() throws Exception {
+        UserTo updatedUserTo = getUpdatedUserTo();
+        User updatedUserExpected = getUpdatedUser();
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put("/users/1000").headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedUserTo)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        User updatedUser = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), User.class);
+        assertThat(updatedUser).usingRecursiveComparison()
+            .ignoringFields("registered", "emailVerificationToken", "password").isEqualTo(updatedUserExpected);
+    }
+
+    @Test
+    void updateUserWhenUnAuth() throws Exception {
         UserTo updatedUserTo = getUpdatedUserTo();
         perform(MockMvcRequestBuilders.put("/users/1000")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedUserTo)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void updateUserNotOwnWhenUserTry() throws Exception {
+        UserTo updatedUserTo = getUpdatedUserTo();
+        perform(MockMvcRequestBuilders.put("/users/1001")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedUserTo)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
