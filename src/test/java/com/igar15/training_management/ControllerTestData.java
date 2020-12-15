@@ -54,6 +54,21 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "USERTO{ID=2000, NAME='NEW USER', EMAIL='NEWEMAIL@TEST.COM'} MUST BE NEW (ID=NULL)");
 
+    public static final MyHttpResponse USER_MUST_BE_WITH_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "USERTO{ID=1001, NAME='USER1 UPDATED', EMAIL='USER1@TEST.RU UPDATED'} MUST BE WITH ID=1000");
+
+    public static final MyHttpResponse USER_UPDATE_METHOD_NOT_ALLOWED_RESPONSE = new MyHttpResponse(HttpStatus.METHOD_NOT_ALLOWED.value(),
+            HttpStatus.METHOD_NOT_ALLOWED,
+            HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase().toUpperCase(),
+            "This request method is not allowed on this endpoint. Please send a 'GET, POST' request");
+
+    public static final MyHttpResponse USER_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND USER WITH ID: 10");
+
 
 
 
