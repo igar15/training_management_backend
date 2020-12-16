@@ -1,5 +1,6 @@
 package com.igar15.training_management.exceptions.handler;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.exceptions.*;
@@ -77,7 +78,7 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(myHttpResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class, PropertyReferenceException.class, ValidationException.class, MissingServletRequestParameterException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class, PropertyReferenceException.class, ValidationException.class, MissingServletRequestParameterException.class, JWTDecodeException.class})
     public ResponseEntity<MyHttpResponse> httpMessageNotReadableException(HttpServletRequest request, Exception exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), HTTP_MESSAGE_NOT_READABLE);

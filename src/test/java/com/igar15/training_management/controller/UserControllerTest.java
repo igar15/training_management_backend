@@ -233,39 +233,39 @@ class UserControllerTest extends AbstractControllerTest {
     void createUserWithNotValidAttributes() throws Exception {
         UserTo newUserTo = getNewUserTo();
         newUserTo.setName(null);
-        ResultActions resultActions = getResultActions(newUserTo);
+        ResultActions resultActions = getResultActions(newUserTo, "/users");
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_BLANK_USER_NAME_RESPONSE);
 
         newUserTo.setName("x");
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_SIZE_USER_NAME_RESPONSE);
 
         newUserTo = getNewUserTo();
         newUserTo.setPassword(null);
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_BLANK_USER_PASSWORD_RESPONSE);
 
         newUserTo.setPassword("1234");
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_SIZE_USER_PASSWORD_RESPONSE);
 
         newUserTo = getNewUserTo();
         newUserTo.setEmail(null);
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_BLANK_USER_EMAIL_RESPONSE);
 
         newUserTo.setEmail("dfsdf.dfsdfsd");
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_PATTERN_USER_EMAIL_RESPONSE);
@@ -273,26 +273,18 @@ class UserControllerTest extends AbstractControllerTest {
         newUserTo = getNewUserTo();
         newUserTo.setName(null);
         newUserTo.setPassword(null);
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         Assertions.assertTrue(myHttpResponse.getMessage().contains("NAME MUST NOT BE BLANK"));
         Assertions.assertTrue(myHttpResponse.getMessage().contains("PASSWORD MUST NOT BE BLANK"));
 
         newUserTo = getNewUserTo();
         newUserTo.setId(2000L);
-        resultActions = getResultActions(newUserTo);
+        resultActions = getResultActions(newUserTo, "/users");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(USER_MUST_BE_NEW_RESPONSE);
 
-    }
-
-    private ResultActions getResultActions(UserTo newUserTo) throws Exception {
-        return perform(MockMvcRequestBuilders.post("/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtil.writeValue(newUserTo)))
-                    .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-                    .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -538,4 +530,60 @@ class UserControllerTest extends AbstractControllerTest {
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(TOKEN_EXPIRED_RESPONSE);
     }
+
+    @Test
+    void resetPasswordWhenTokenNotValid() throws Exception {
+        PasswordResetModel passwordResetModel = new PasswordResetModel();
+        passwordResetModel.setToken(USER2_EMAIL_NOT_VALID_VERIFICATION_TOKEN);
+        passwordResetModel.setPassword("12345678");
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post("/users/resetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(passwordResetModel)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
+    }
+
+    @Test
+    void resetPasswordWhenPasswordResetModelNotValid() throws Exception {
+        PasswordResetModel passwordResetModel = new PasswordResetModel();
+        passwordResetModel.setToken(null);
+        passwordResetModel.setPassword("12345678");
+        ResultActions resultActions = getResultActions(passwordResetModel, "/users/resetPassword");
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_MODEL_BLANK_TOKEN_RESPONSE);
+        passwordResetModel.setToken(USER2_EMAIL_VERIFICATION_TOKEN);
+        passwordResetModel.setPassword(null);
+        resultActions = getResultActions(passwordResetModel, "/users/resetPassword");
+        myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_MODEL_BLANK_PASSWORD_RESPONSE);
+        passwordResetModel.setPassword("1234");
+        resultActions = getResultActions(passwordResetModel, "/users/resetPassword");
+        myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_MODEL_NOT_VALID_PASSWORD_SIZE_RESPONSE);
+    }
+
+    @Test
+    void resetPasswordWhenPasswordResetModelNotPresented() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post("/users/resetPassword"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
+    }
+
+    private ResultActions getResultActions(Object to, String urlTemplate) throws Exception {
+        return perform(MockMvcRequestBuilders.post(urlTemplate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(to)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+
 }

@@ -98,6 +98,23 @@ public class ControllerTestData {
             HttpStatus.OK.getReasonPhrase().toUpperCase(),
             "Your password was successfully reset");
 
+    public static final MyHttpResponse PASSWORD_RESET_MODEL_BLANK_TOKEN_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "PLEASE CORRECT THESE ERRORS: PASSWORD RESET TOKEN MUST NOT BE BLANK");
+
+    public static final MyHttpResponse PASSWORD_RESET_MODEL_BLANK_PASSWORD_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "PLEASE CORRECT THESE ERRORS: PASSWORD MUST NOT BE BLANK");
+
+    public static final MyHttpResponse PASSWORD_RESET_MODEL_NOT_VALID_PASSWORD_SIZE_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "PLEASE CORRECT THESE ERRORS: PASSWORD LENGTH MUST BE BETWEEN 5 AND 32 CHARACTERS");
+
+
+
 
 
 
