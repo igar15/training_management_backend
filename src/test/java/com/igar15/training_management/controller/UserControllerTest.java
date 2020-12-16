@@ -106,6 +106,28 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void loginWhenBadCredentialsPassedFiveTimes() throws Exception {
+        UserTo userTo = getUserToForLogin();
+        userTo.setPassword("12345678");
+        for (int i = 0; i < 5; i++) {
+            perform(MockMvcRequestBuilders.post("/users/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(JsonUtil.writeValue(userTo)))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        }
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(userTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        Assertions.assertNull(resultActions.andReturn().getResponse().getHeader(SecurityConstant.JWT_AUTHORIZATION_TOKEN_HEADER));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(LOCKED_RESPONSE);
+    }
+
+    @Test
     void getUser() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/1000").headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -392,8 +414,34 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void enableUser() {
+    void enableUserWhenAdminTry() throws Exception {
+        perform(MockMvcRequestBuilders.patch("/users/1000").param("enabled", "false").headers(adminJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        User user = userService.getUserById(USER1_ID);
+        Assertions.assertFalse(user.isEnabled());
+        perform(MockMvcRequestBuilders.patch("/users/1000").param("enabled", "true").headers(adminJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        user = userService.getUserById(USER1_ID);
+        Assertions.assertTrue(user.isEnabled());
     }
+
+    @Test
+    void enableUserWhenUserTry() throws Exception {
+        perform(MockMvcRequestBuilders.patch("/users/1000").param("enabled", "false").headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void enableUserNotFoundWhenAdminTry() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.patch("/users/10").param("enabled", "false").headers(adminJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(USER_NOT_FOUND_RESPONSE);
+    }
+
+
 
     @Test
     void verifyEmailToken() {
