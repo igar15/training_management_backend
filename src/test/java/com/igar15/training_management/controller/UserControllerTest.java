@@ -2,11 +2,14 @@ package com.igar15.training_management.controller;
 
 import com.igar15.training_management.AbstractControllerTest;
 import com.igar15.training_management.constants.SecurityConstant;
+import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
+import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.security.UserPrincipal;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.MyHttpResponse;
+import com.igar15.training_management.to.PasswordResetModel;
 import com.igar15.training_management.to.UserTo;
 import com.igar15.training_management.utils.JsonUtil;
 import com.igar15.training_management.utils.JwtTokenProvider;
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -33,6 +37,9 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     private HttpHeaders userJwtHeader;
 
@@ -441,17 +448,94 @@ class UserControllerTest extends AbstractControllerTest {
                 .ignoringFields("timeStamp").isEqualTo(USER_NOT_FOUND_RESPONSE);
     }
 
-
-
     @Test
-    void verifyEmailToken() {
+    void verifyEmailToken() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/email-verification").param("token", USER2_EMAIL_VERIFICATION_TOKEN))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EMAIL_VERIFIED_RESPONSE);
     }
 
     @Test
-    void requestPasswordReset() {
+    void verifyEmailTokenWhenTokenNotPresentedInParam() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/email-verification"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
     }
 
     @Test
-    void resetPassword() {
+    void verifyEmailTokenWhenTokenIsExpired() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/email-verification").param("token", USER2_EMAIL_EXPIRED_VERIFICATION_TOKEN))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(TOKEN_EXPIRED_RESPONSE);
+    }
+
+    @Test
+    void verifyEmailTokenWhenTokenIsNotValid() throws Exception {
+       perform(MockMvcRequestBuilders.get("/users/email-verification").param("token", USER2_EMAIL_NOT_VALID_VERIFICATION_TOKEN))
+               .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+               .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void requestPasswordReset() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/password-reset-request/user1@test.ru"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_REQUEST_RESPONSE);
+    }
+
+    @Test
+    void requestPasswordResetWhenEmailNotFound() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/password-reset-request/userXXX@test.ru"))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_REQUEST_EMAIL_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
+    void resetPassword() throws Exception {
+        userService.requestPasswordReset(USER1.getEmail());
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found password reset token for email: " + USER1.getEmail()));
+        PasswordResetModel passwordResetModel = new PasswordResetModel();
+        passwordResetModel.setToken(passwordResetToken.getToken());
+        passwordResetModel.setPassword("12345678");
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post("/users/resetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(passwordResetModel)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_SUCCESS_RESPONSE);
+        User user = userService.getUserByEmail(USER1.getEmail());
+        Assertions.assertTrue(BCrypt.checkpw("12345678", user.getPassword()));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found token")));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByToken(passwordResetToken.getToken()).orElseThrow(() -> new MyEntityNotFoundException("Not found token")));
+    }
+
+    @Test
+    void resetPasswordWhenTokenIsExpired() throws Exception {
+        PasswordResetModel passwordResetModel = new PasswordResetModel();
+        passwordResetModel.setToken(USER2_EMAIL_EXPIRED_VERIFICATION_TOKEN);
+        passwordResetModel.setPassword("12345678");
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post("/users/resetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(passwordResetModel)))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(TOKEN_EXPIRED_RESPONSE);
     }
 }

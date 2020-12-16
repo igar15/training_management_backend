@@ -1,5 +1,6 @@
 package com.igar15.training_management.exceptions.handler;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.exceptions.*;
 import com.igar15.training_management.to.MyHttpResponse;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -75,7 +77,7 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(myHttpResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class, PropertyReferenceException.class, ValidationException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class, PropertyReferenceException.class, ValidationException.class, MissingServletRequestParameterException.class})
     public ResponseEntity<MyHttpResponse> httpMessageNotReadableException(HttpServletRequest request, Exception exception) {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), HTTP_MESSAGE_NOT_READABLE);

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.validation.ConstraintViolationException;
 
@@ -177,7 +178,7 @@ class UserServiceImplTest extends AbstractServiceTest {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found token with user email: " + USER1.getEmail()));
         userService.resetPassword(passwordResetToken.getToken(), "newpassword");
         User user = userService.getUserById(USER1_ID);
-//        Assertions.assertEquals("newpassword", user.getPassword());
+        Assertions.assertTrue(BCrypt.checkpw("newpassword", user.getPassword()));
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found token with user email: " + USER1.getEmail())));
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> passwordResetTokenRepository.findByToken(passwordResetToken.getToken()).orElseThrow(() -> new MyEntityNotFoundException("Not found token :" + passwordResetToken.getToken())));
     }

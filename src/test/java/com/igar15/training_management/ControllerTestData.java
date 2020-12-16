@@ -1,6 +1,7 @@
 package com.igar15.training_management;
 
 import com.igar15.training_management.constants.SecurityConstant;
+import com.igar15.training_management.exceptions.handler.MyExceptionHandler;
 import com.igar15.training_management.to.MyHttpResponse;
 import org.springframework.http.HttpStatus;
 
@@ -68,6 +69,35 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "NOT FOUND USER WITH ID: 10");
+
+    public static final MyHttpResponse EMAIL_VERIFIED_RESPONSE = new MyHttpResponse(HttpStatus.OK.value(),
+            HttpStatus.OK,
+            HttpStatus.OK.getReasonPhrase().toUpperCase(),
+            "Your email was successfully verified.");
+
+    public static final MyHttpResponse BAD_REQUEST_DATA_RESPONSE = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(),
+            MyExceptionHandler.HTTP_MESSAGE_NOT_READABLE);
+
+    public static final MyHttpResponse TOKEN_EXPIRED_RESPONSE = new MyHttpResponse(HttpStatus.UNAUTHORIZED.value(),
+            HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(),
+            "THE TOKEN HAS EXPIRED ON TUE DEC 15 11:18:08 MSK 2020.");
+
+    public static final MyHttpResponse PASSWORD_RESET_REQUEST_RESPONSE = new MyHttpResponse(HttpStatus.OK.value(),
+            HttpStatus.OK,
+            HttpStatus.OK.getReasonPhrase().toUpperCase(),
+            "The message with link to reset your password was sent to " + "user1@test.ru");
+
+    public static final MyHttpResponse PASSWORD_RESET_REQUEST_EMAIL_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND USER WITH EMAIL: USERXXX@TEST.RU");
+
+    public static final MyHttpResponse PASSWORD_RESET_SUCCESS_RESPONSE = new MyHttpResponse(HttpStatus.OK.value(),
+            HttpStatus.OK,
+            HttpStatus.OK.getReasonPhrase().toUpperCase(),
+            "Your password was successfully reset");
+
 
 
 
