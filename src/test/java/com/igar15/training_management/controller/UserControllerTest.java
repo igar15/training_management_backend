@@ -597,18 +597,4 @@ class UserControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    void sdfsdds() {
-        String dsfsdKKDKFKDSFK123123123fdsfsdfFDFSDFFsd323242 = JWT.create()
-                .withIssuer(SecurityConstant.TRAINING_MANAGEMENT_LLC)
-                .withAudience(SecurityConstant.TRAINING_MANAGEMENT_ADMINISTRATION)
-                .withIssuedAt(new Date())
-                .withSubject(USER2.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() - SecurityConstant.EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME))
-                .sign(Algorithm.HMAC512("dsfsdKKDKFKDSFK123123123fdsfsdfFDFSDFFsd323242"));
-        System.out.println();
-
-    }
-
-
 }
