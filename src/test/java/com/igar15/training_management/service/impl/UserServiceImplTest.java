@@ -2,6 +2,7 @@ package com.igar15.training_management.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.igar15.training_management.AbstractServiceTest;
 import com.igar15.training_management.constants.SecurityConstant;
@@ -149,7 +150,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     @Test
     void verifyEmailTokenWhereNotFoundExpected() {
         String random = RandomString.make();
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.verifyEmailToken(random));
+        Assertions.assertThrows(JWTDecodeException.class, () -> userService.verifyEmailToken(random));
     }
 
     @Test

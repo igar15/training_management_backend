@@ -1,5 +1,7 @@
 package com.igar15.training_management.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.igar15.training_management.AbstractControllerTest;
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.PasswordResetToken;
@@ -7,6 +9,7 @@ import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.security.UserPrincipal;
+import com.igar15.training_management.service.LoginAttemptService;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.MyHttpResponse;
 import com.igar15.training_management.to.PasswordResetModel;
@@ -14,6 +17,7 @@ import com.igar15.training_management.to.UserTo;
 import com.igar15.training_management.utils.JsonUtil;
 import com.igar15.training_management.utils.JwtTokenProvider;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +28,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.annotation.PostConstruct;
+import java.util.Date;
 import java.util.List;
 
 import static com.igar15.training_management.ControllerTestData.*;
@@ -40,6 +45,9 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     private HttpHeaders userJwtHeader;
 
@@ -132,6 +140,7 @@ class UserControllerTest extends AbstractControllerTest {
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(LOCKED_RESPONSE);
+        loginAttemptService.evictUserFromLoginAttemptCache(USER1.getEmail());
     }
 
     @Test
@@ -472,9 +481,12 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void verifyEmailTokenWhenTokenIsNotValid() throws Exception {
-       perform(MockMvcRequestBuilders.get("/users/email-verification").param("token", USER2_EMAIL_NOT_VALID_VERIFICATION_TOKEN))
-               .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-               .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get("/users/email-verification").param("token", USER2_EMAIL_NOT_VALID_VERIFICATION_TOKEN))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
     }
 
     @Test
@@ -583,6 +595,19 @@ class UserControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(to)))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void sdfsdds() {
+        String dsfsdKKDKFKDSFK123123123fdsfsdfFDFSDFFsd323242 = JWT.create()
+                .withIssuer(SecurityConstant.TRAINING_MANAGEMENT_LLC)
+                .withAudience(SecurityConstant.TRAINING_MANAGEMENT_ADMINISTRATION)
+                .withIssuedAt(new Date())
+                .withSubject(USER2.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() - SecurityConstant.EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME))
+                .sign(Algorithm.HMAC512("dsfsdKKDKFKDSFK123123123fdsfsdfFDFSDFFsd323242"));
+        System.out.println();
+
     }
 
 

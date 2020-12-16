@@ -122,8 +122,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void verifyEmailToken(String token) {
         Assert.notNull(token, "Email verification token must not be null");
-        User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found user with such token"));
         jwtTokenProvider.isTokenExpired(token);
+        User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new MyEntityNotFoundException("Not found user with such token"));
         user.setEmailVerificationToken(null);
         user.setEnabled(true);
         userRepository.save(user);

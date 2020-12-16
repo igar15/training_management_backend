@@ -81,7 +81,7 @@ public class ControllerTestData {
 
     public static final MyHttpResponse TOKEN_EXPIRED_RESPONSE = new MyHttpResponse(HttpStatus.UNAUTHORIZED.value(),
             HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(),
-            "THE TOKEN HAS EXPIRED ON TUE DEC 15 11:18:08 MSK 2020.");
+            "THE TOKEN HAS EXPIRED ON TUE DEC 15 19:16:27 MSK 2020.");
 
     public static final MyHttpResponse PASSWORD_RESET_REQUEST_RESPONSE = new MyHttpResponse(HttpStatus.OK.value(),
             HttpStatus.OK,

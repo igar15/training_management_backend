@@ -21,7 +21,7 @@ public class UserTestData {
     public static final long ADMIN_ID = 1003;
     public static final String ADMIN_EMAIL = "admin@test.ru";
     public static final String USER2_EMAIL_VERIFICATION_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJUcmFpbmluZyBtYW5hZ2VtZW50IFBvcnRhbCIsInN1YiI6InVzZXIyQHRlc3QucnUiLCJpc3MiOiJUcmFpbmluZyBtYW5hZ2VtZW50LCBMTEMiLCJleHAiOjE2MDgxODc3ODEsImlhdCI6MTYwODEwMTM4MX0.FwiGwzHv98wwqIoFNlmYmp1oYu7kELtjUcC3JkeL85CA2SFHQ1hLFA6qYdggKOO8fHYByDVMVWHVsOIUaQFyag";
-    public static final String USER2_EMAIL_EXPIRED_VERIFICATION_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkB0ZXN0LnJ1IiwiZXhwIjoxNjA4MDIwMjg4LCJpYXQiOjE2MDgxMDY2ODh9.Np_feN7bAvZRfsRf3XzyPBC1rioDzEs5OKJnOL9iqX-zqvL1sOxe3iWGGw608umJzcALoLzxkPK0UlHlvCx0zg";
+    public static final String USER2_EMAIL_EXPIRED_VERIFICATION_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJUcmFpbmluZyBtYW5hZ2VtZW50IFBvcnRhbCIsInN1YiI6InVzZXIyQHRlc3QucnUiLCJpc3MiOiJUcmFpbmluZyBtYW5hZ2VtZW50LCBMTEMiLCJleHAiOjE2MDgwNDg5ODcsImlhdCI6MTYwODEzNTM4N30.wTHbFC29jK8vtbzlfpfeu4VvtJsBaSp4Msz-DMKOHgtMsZ4LacMuSWJOcHO_jL0-UA9_FzHo6dhipqg7jYZOqQ";
     public static final String USER2_EMAIL_NOT_VALID_VERIFICATION_TOKEN = "eyJ0eXAiOiJKV1QiLCvcvcxGciOiJIUzUxMiJ9.cxdvdvfdvdvd.Np_feN7bAvZRfsRf3XzyPBC1riFdfsEs5OKJnOL9iqX-zqvL1sOxe3iWGGw608umJzcALoLzxkPK0UlHlvCx0zg";
 
     public static final User USER1 = new User(USER1_ID, "user1", "user1@test.ru", "$2y$10$mM4j46rI5jEwIa4FjZZUdOCD1VgO0.KovMo4ZDhcS/Tvg8v4aV4TO", true, true, Role.ROLE_USER);
