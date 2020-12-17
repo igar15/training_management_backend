@@ -2,6 +2,12 @@ package com.igar15.training_management.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.igar15.training_management.entity.abstracts.AbstractBaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
@@ -10,6 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,6 +24,8 @@ import java.time.LocalDateTime;
 public class Workout extends AbstractBaseEntity {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = "date_time")
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

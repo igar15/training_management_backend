@@ -9,6 +9,7 @@ public class ControllerTestData {
 
     public static final String USERS_URI = "/users";
     public static final String EXERCISE_TYPES_URI = "/exerciseTypes";
+    public static final String WORKOUTS_URI = "/workouts";
 
     public static final MyHttpResponse FORBIDDEN_RESPONSE = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN,
             HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.FORBIDDEN_MESSAGE);
