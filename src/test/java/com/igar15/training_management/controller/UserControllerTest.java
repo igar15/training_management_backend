@@ -247,39 +247,39 @@ class UserControllerTest extends AbstractControllerTest {
                 .ignoringFields("timeStamp").isEqualTo(EMAIL_ALREADY_EXIST_RESPONSE);
 
         newUserTo.setName(null);
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_NAME_BLANK_RESPONSE);
 
         newUserTo.setName("x");
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_NAME_SIZE_RESPONSE);
 
         newUserTo = getNewUserTo();
         newUserTo.setPassword(null);
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_PASSWORD_BLANK_RESPONSE);
 
         newUserTo.setPassword("1234");
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_PASSWORD_SIZE_RESPONSE);
 
         newUserTo = getNewUserTo();
         newUserTo.setEmail(null);
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_EMAIL_BLANK_RESPONSE);
 
         newUserTo.setEmail("xxxx.xxxxxx");
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_EMAIL_PATTERN_RESPONSE);
@@ -287,14 +287,14 @@ class UserControllerTest extends AbstractControllerTest {
         newUserTo = getNewUserTo();
         newUserTo.setName(null);
         newUserTo.setPassword(null);
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         Assertions.assertTrue(myHttpResponse.getMessage().contains("NAME MUST NOT BE BLANK"));
         Assertions.assertTrue(myHttpResponse.getMessage().contains("PASSWORD MUST NOT BE BLANK"));
 
         newUserTo = getNewUserTo();
         newUserTo.setId(100L);
-        resultActions = getResultActions(newUserTo, USERS_URI);
+        resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(USER_MUST_BE_NEW_RESPONSE);
@@ -602,7 +602,7 @@ class UserControllerTest extends AbstractControllerTest {
         PasswordResetModel passwordResetModel = new PasswordResetModel();
         passwordResetModel.setToken(null);
         passwordResetModel.setPassword("newpassword");
-        ResultActions resultActions = getResultActions(passwordResetModel, USERS_URI + "/resetPassword");
+        ResultActions resultActions = getResultActionsWhenToNotValid(passwordResetModel, USERS_URI + "/resetPassword");
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_MODEL_TOKEN_BLANK_RESPONSE);
@@ -610,13 +610,13 @@ class UserControllerTest extends AbstractControllerTest {
         String passwordResetToken = jwtTokenProvider.generatePasswordResetToken(USER2.getEmail());
         passwordResetModel.setToken(passwordResetToken);
         passwordResetModel.setPassword(null);
-        resultActions = getResultActions(passwordResetModel, USERS_URI + "/resetPassword");
+        resultActions = getResultActionsWhenToNotValid(passwordResetModel, USERS_URI + "/resetPassword");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_MODEL_PASSWORD_BLANK_RESPONSE);
 
         passwordResetModel.setPassword("1234");
-        resultActions = getResultActions(passwordResetModel, USERS_URI + "/resetPassword");
+        resultActions = getResultActionsWhenToNotValid(passwordResetModel, USERS_URI + "/resetPassword");
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_MODEL_NOT_VALID_PASSWORD_SIZE_RESPONSE);
@@ -632,7 +632,7 @@ class UserControllerTest extends AbstractControllerTest {
                 .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
     }
 
-    private ResultActions getResultActions(Object to, String urlTemplate) throws Exception {
+    private ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
         return perform(MockMvcRequestBuilders.post(urlTemplate)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(to)))

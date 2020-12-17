@@ -127,6 +127,10 @@ public class ControllerTestData {
             "PLEASE CORRECT THESE ERRORS: PASSWORD LENGTH MUST BE BETWEEN 5 AND 32 CHARACTERS");
 
 
+
+
+
+
     public static final MyHttpResponse EXERCISE_TYPE_NOT_OWN_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
@@ -141,6 +145,30 @@ public class ControllerTestData {
             HttpStatus.CONFLICT,
             HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(),
             "EXERCISE TYPE WITH NAME USER1 EXERCISE TYPE 1 ALREADY EXISTS");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_TYPE_NAME_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: NAME MUST NOT BE BLANK");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_TYPE_NAME_SIZE_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "PLEASE CORRECT THESE ERRORS: NAME LENGTH MUST BE BETWEEN 2 AND 100 CHARACTERS");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_TYPE_MEASURE_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "PLEASE CORRECT THESE ERRORS: MEASURE MUST NOT BE BLANK");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_TYPE_MEASURE_NOT_EXIST_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "PLEASE CORRECT THESE ERRORS: MEASURE XXX DOES NOT EXIST");
+
+    public static final MyHttpResponse EXERCISE_TYPE_MUST_BE_WITH_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "EXERCISETYPETO{ID=10, NAME='USER1 EXERCISE TYPE 1 UPDATED', MEASURE='KILOMETERS'} MUST BE WITH ID=1005");
 
 
 
