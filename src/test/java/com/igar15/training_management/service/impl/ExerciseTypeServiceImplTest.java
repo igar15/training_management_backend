@@ -27,13 +27,15 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
     @Test
     void getExercisesTypes() {
         List<ExerciseType> exercisesTypes = exerciseTypeService.getExercisesTypes(USER1_ID);
-        assertThat(exercisesTypes).isEqualTo(List.of(USER1_EXERCISE_TYPE1, USER1_EXERCISE_TYPE2, USER1_EXERCISE_TYPE3));
+        assertThat(exercisesTypes).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(List.of(USER1_EXERCISE_TYPE1, USER1_EXERCISE_TYPE2, USER1_EXERCISE_TYPE3));
     }
 
     @Test
     void getExerciseTypeById() {
         ExerciseType exerciseType = exerciseTypeService.getExerciseTypeById(USER1_EXERCISE_TYPE1.getId(), USER1_ID);
-        assertThat(exerciseType).isEqualTo(USER1_EXERCISE_TYPE1);
+        assertThat(exerciseType).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(USER1_EXERCISE_TYPE1);
     }
 
     @Test
@@ -53,8 +55,10 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
         ExerciseType createdExerciseType = exerciseTypeService.createExerciseType(newExerciseTypeTo, USER1_ID);
         Long createdId = createdExerciseType.getId();
         newExerciseType.setId(createdId);
-        assertThat(createdExerciseType).isEqualTo(newExerciseType);
-        assertThat(exerciseTypeService.getExerciseTypeById(createdId, USER1_ID)).isEqualTo(newExerciseType);
+        assertThat(createdExerciseType).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(newExerciseType);
+        assertThat(exerciseTypeService.getExerciseTypeById(createdId, USER1_ID)).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(newExerciseType);
     }
 
     @Test
@@ -69,7 +73,8 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
         ExerciseTypeTo newExerciseTypeTo = getNewExerciseTypeTo();
         newExerciseTypeTo.setName(USER1_EXERCISE_TYPE1.getName());
         ExerciseType exerciseType = exerciseTypeService.createExerciseType(newExerciseTypeTo, ADMIN_ID);
-        assertThat(exerciseType).isEqualTo(exerciseTypeService.getExerciseTypeById(exerciseType.getId(), ADMIN_ID));
+        assertThat(exerciseType).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(exerciseTypeService.getExerciseTypeById(exerciseType.getId(), ADMIN_ID));
     }
 
     @Test
@@ -87,7 +92,8 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
         ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
         ExerciseType updatedExerciseTypeExpected = getUpdatedExerciseType();
         exerciseTypeService.updateExerciseType(updatedExerciseTypeTo, USER1_ID);
-        assertThat(exerciseTypeService.getExerciseTypeById(updatedExerciseTypeExpected.getId(), USER1_ID)).isEqualTo(updatedExerciseTypeExpected);
+        assertThat(exerciseTypeService.getExerciseTypeById(updatedExerciseTypeExpected.getId(), USER1_ID)).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(updatedExerciseTypeExpected);
     }
 
     @Test
@@ -104,7 +110,8 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
         updatedExerciseTypeTo.setName("user1 exercise type 1");
         updatedExerciseTypeExpected.setName("user1 exercise type 1");
         exerciseTypeService.updateExerciseType(updatedExerciseTypeTo, USER1_ID);
-        assertThat(exerciseTypeService.getExerciseTypeById(updatedExerciseTypeExpected.getId(), USER1_ID)).isEqualTo(updatedExerciseTypeExpected);
+        assertThat(exerciseTypeService.getExerciseTypeById(updatedExerciseTypeExpected.getId(), USER1_ID)).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(updatedExerciseTypeExpected);
     }
 
     @Test

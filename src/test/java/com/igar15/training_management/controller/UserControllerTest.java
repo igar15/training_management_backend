@@ -127,7 +127,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getUser() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID).headers(userJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID)
+                .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         User user = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), User.class);
@@ -235,9 +236,19 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void createUserWithNotValidAttributes() throws Exception {
         UserTo newUserTo = getNewUserTo();
-        newUserTo.setName(null);
-        ResultActions resultActions = getResultActions(newUserTo, USERS_URI);
+        newUserTo.setEmail(USER1.getEmail());
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newUserTo)))
+                .andExpect(MockMvcResultMatchers.status().isConflict())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EMAIL_ALREADY_EXIST_RESPONSE);
+
+        newUserTo.setName(null);
+        resultActions = getResultActions(newUserTo, USERS_URI);
+        myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_USER_NAME_BLANK_RESPONSE);
 

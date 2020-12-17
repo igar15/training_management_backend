@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 public class ControllerTestData {
 
     public static final String USERS_URI = "/users";
+    public static final String EXERCISE_TYPES_URI = "/exerciseTypes";
 
     public static final MyHttpResponse FORBIDDEN_RESPONSE = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN,
             HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.FORBIDDEN_MESSAGE);
@@ -26,6 +27,12 @@ public class ControllerTestData {
 
     public static final MyHttpResponse LOCKED_RESPONSE = new MyHttpResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED,
             HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(), SecurityConstant.ACCOUNT_LOCKED);
+
+    public static final MyHttpResponse EMAIL_ALREADY_EXIST_RESPONSE = new MyHttpResponse(HttpStatus.CONFLICT.value(),
+            HttpStatus.CONFLICT,
+            HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(),
+            "USER WITH EMAIL USER1@TEST.RU ALREADY EXISTS");
+
 
     public static final MyHttpResponse NOT_VALID_USER_NAME_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
@@ -118,5 +125,23 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD LENGTH MUST BE BETWEEN 5 AND 32 CHARACTERS");
+
+
+    public static final MyHttpResponse EXERCISE_TYPE_NOT_OWN_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND EXERCISE TYPE WITH ID: 1007");
+
+    public static final MyHttpResponse EXERCISE_TYPE_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND EXERCISE TYPE WITH ID: 10");
+
+    public static final MyHttpResponse EXERCISE_TYPE_ALREADY_EXIST_RESPONSE = new MyHttpResponse(HttpStatus.CONFLICT.value(),
+            HttpStatus.CONFLICT,
+            HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(),
+            "EXERCISE TYPE WITH NAME USER1 EXERCISE TYPE 1 ALREADY EXISTS");
+
+
 
 }

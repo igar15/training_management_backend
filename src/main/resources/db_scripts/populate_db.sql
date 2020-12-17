@@ -7,7 +7,7 @@ alter sequence global_seq restart with 1000;
 
 insert into users (name, email, password, registered, email_verification_token, enabled, is_non_locked, role)
 values ('user1', 'user1@test.ru', '$2y$10$mM4j46rI5jEwIa4FjZZUdOCD1VgO0.KovMo4ZDhcS/Tvg8v4aV4TO', '2020-11-29 19:00:00', null, true, true, 'ROLE_USER'),
-       ('user2', 'user2@test.ru', '123456', '2020-11-29 19:00:00', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJUcmFpbmluZyBtYW5hZ2VtZW50IFBvcnRhbCIsInN1YiI6InVzZXIyQHRlc3QucnUiLCJpc3MiOiJUcmFpbmluZyBtYW5hZ2VtZW50LCBMTEMiLCJleHAiOjE2MDgxODc3ODEsImlhdCI6MTYwODEwMTM4MX0.FwiGwzHv98wwqIoFNlmYmp1oYu7kELtjUcC3JkeL85CA2SFHQ1hLFA6qYdggKOO8fHYByDVMVWHVsOIUaQFyag', false, true, 'ROLE_USER'),
+       ('user2', 'user2@test.ru', '123456', '2020-11-29 19:00:00', null, false, true, 'ROLE_USER'),
        ('user3', 'user3@test.ru', '123456', '2020-11-29 19:00:00', null, true, false, 'ROLE_USER'),
        ('admin', 'admin@test.ru', '$2y$10$mM4j46rI5jEwIa4FjZZUdOCD1VgO0.KovMo4ZDhcS/Tvg8v4aV4TO', '2020-11-29 19:00:00', null, true, true, 'ROLE_ADMIN');
 
