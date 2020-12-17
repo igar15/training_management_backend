@@ -1,7 +1,12 @@
 package com.igar15.training_management;
 
+import com.igar15.training_management.entity.User;
+import com.igar15.training_management.security.UserPrincipal;
+import com.igar15.training_management.service.UserService;
+import com.igar15.training_management.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -13,9 +18,23 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.annotation.PostConstruct;
 
+import static com.igar15.training_management.UserTestData.ADMIN;
+import static com.igar15.training_management.UserTestData.USER1;
+
 @SpringBootTest
 @Transactional
 public abstract class AbstractControllerTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    protected HttpHeaders userJwtHeader;
+
+    protected HttpHeaders adminJwtHeader;
+
 
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
@@ -36,6 +55,16 @@ public abstract class AbstractControllerTest {
                 .addFilter(CHARACTER_ENCODING_FILTER)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
+
+        User user = userService.getUserByEmail(USER1.getEmail());
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        userJwtHeader = new HttpHeaders();
+        userJwtHeader.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtTokenProvider.generateAuthorizationToken(userPrincipal));
+        User admin = userService.getUserByEmail(ADMIN.getEmail());
+        UserPrincipal adminUserPrincipal = new UserPrincipal(admin);
+        adminJwtHeader = new HttpHeaders();
+        adminJwtHeader.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtTokenProvider.generateAuthorizationToken(adminUserPrincipal));
+
     }
 
     public ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {

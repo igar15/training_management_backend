@@ -7,8 +7,14 @@ import org.springframework.http.HttpStatus;
 
 public class ControllerTestData {
 
+    public static final String USERS_URI = "/users";
+
     public static final MyHttpResponse FORBIDDEN_RESPONSE = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN,
             HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.FORBIDDEN_MESSAGE);
+
+    public static final MyHttpResponse ACCESS_DENIED_RESPONSE = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN,
+            HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.NOT_ENOUGH_PERMISSION);
+
 
     public static final MyHttpResponse BAD_CREDENTIALS_RESPONSE = new MyHttpResponse(HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(),
@@ -21,31 +27,31 @@ public class ControllerTestData {
     public static final MyHttpResponse LOCKED_RESPONSE = new MyHttpResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED,
             HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(), SecurityConstant.ACCOUNT_LOCKED);
 
-    public static final MyHttpResponse NOT_VALID_BLANK_USER_NAME_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse NOT_VALID_USER_NAME_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: NAME MUST NOT BE BLANK");
 
-    public static final MyHttpResponse NOT_VALID_SIZE_USER_NAME_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse NOT_VALID_USER_NAME_SIZE_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: NAME LENGTH MUST BE BETWEEN 2 AND 100 CHARACTERS");
 
-    public static final MyHttpResponse NOT_VALID_BLANK_USER_PASSWORD_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse NOT_VALID_USER_PASSWORD_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD MUST NOT BE BLANK");
 
-    public static final MyHttpResponse NOT_VALID_SIZE_USER_PASSWORD_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse NOT_VALID_USER_PASSWORD_SIZE_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD LENGTH MUST BE BETWEEN 5 AND 32 CHARACTERS");
 
-    public static final MyHttpResponse NOT_VALID_BLANK_USER_EMAIL_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse NOT_VALID_USER_EMAIL_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: EMAIL MUST NOT BE BLANK");
 
-    public static final MyHttpResponse NOT_VALID_PATTERN_USER_EMAIL_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse NOT_VALID_USER_EMAIL_PATTERN_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: EMAIL MUST ACCORD EMAIL PATTERN");
@@ -53,7 +59,7 @@ public class ControllerTestData {
     public static final MyHttpResponse USER_MUST_BE_NEW_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
-            "USERTO{ID=2000, NAME='NEW USER', EMAIL='NEWEMAIL@TEST.COM'} MUST BE NEW (ID=NULL)");
+            "USERTO{ID=100, NAME='NEW USER', EMAIL='NEWEMAIL@TEST.COM'} MUST BE NEW (ID=NULL)");
 
     public static final MyHttpResponse USER_MUST_BE_WITH_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
@@ -91,19 +97,19 @@ public class ControllerTestData {
     public static final MyHttpResponse PASSWORD_RESET_REQUEST_EMAIL_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
-            "NOT FOUND USER WITH EMAIL: USERXXX@TEST.RU");
+            "NOT FOUND USER WITH EMAIL: USER99@YANDEX.RU");
 
     public static final MyHttpResponse PASSWORD_RESET_SUCCESS_RESPONSE = new MyHttpResponse(HttpStatus.OK.value(),
             HttpStatus.OK,
             HttpStatus.OK.getReasonPhrase().toUpperCase(),
             "Your password was successfully reset");
 
-    public static final MyHttpResponse PASSWORD_RESET_MODEL_BLANK_TOKEN_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse PASSWORD_RESET_MODEL_TOKEN_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD RESET TOKEN MUST NOT BE BLANK");
 
-    public static final MyHttpResponse PASSWORD_RESET_MODEL_BLANK_PASSWORD_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+    public static final MyHttpResponse PASSWORD_RESET_MODEL_PASSWORD_BLANK_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD MUST NOT BE BLANK");
@@ -112,12 +118,5 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD LENGTH MUST BE BETWEEN 5 AND 32 CHARACTERS");
-
-
-
-
-
-
-
 
 }
