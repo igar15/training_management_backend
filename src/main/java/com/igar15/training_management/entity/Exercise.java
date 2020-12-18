@@ -55,6 +55,12 @@ public class Exercise extends AbstractBaseEntity {
         this.user = user;
     }
 
+    public Exercise(Long id, int quantity, ExerciseType exerciseType) {
+        super(id);
+        this.quantity = quantity;
+        this.exerciseType = exerciseType;
+    }
+
     public int getQuantity() {
         return quantity;
     }

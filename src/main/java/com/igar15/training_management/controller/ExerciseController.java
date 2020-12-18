@@ -36,7 +36,7 @@ public class ExerciseController {
     @ApiOperation(value = "${exerciseController.GetExercise.ApiOperation.Value}", notes = "${exerciseController.GetExercise.ApiOperation.Notes}")
     public ResponseEntity<Exercise> getExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") long workoutId, @PathVariable("id") long id) {
         log.info("get exercise id={} for workout id={} for user id={}", id, workoutId, userId);
-        Exercise exercise = exerciseService.getExerciseByIdAndUserId(id, userId);
+        Exercise exercise = exerciseService.getExerciseByIdAndWorkoutIdAndUserId(id, workoutId, userId);
         return new ResponseEntity<>(exercise, HttpStatus.OK);
     }
 
@@ -87,7 +87,7 @@ public class ExerciseController {
             throw new IllegalRequestDataException(exerciseTo + " must be with workout id=" + workoutId);
         }
         log.info("update {} for workout id={} for user id={}", exerciseTo, workoutId, userId);
-        Exercise exercise = exerciseService.updateExercise(exerciseTo, userId);
+        Exercise exercise = exerciseService.updateExercise(exerciseTo, workoutId, userId);
         return new ResponseEntity<>(exercise, HttpStatus.OK);
     }
 
@@ -97,6 +97,6 @@ public class ExerciseController {
     @ApiOperation(value = "${exerciseController.DeleteExercise.ApiOperation.Value}", notes = "${exerciseController.DeleteExercise.ApiOperation.Notes}")
     public void deleteExercise(@PathVariable("userId") long userId, @PathVariable("workoutId") Long workoutId, @PathVariable("id") Long id) {
         log.info("delete exercise id={} for workout id={} for user id={}", id, workoutId, userId);
-        exerciseService.deleteExercise(id, userId);
+        exerciseService.deleteExercise(id, workoutId, userId);
     }
 }

@@ -2,6 +2,8 @@ package com.igar15.training_management.service.impl;
 
 import com.igar15.training_management.AbstractServiceTest;
 import com.igar15.training_management.entity.Exercise;
+import com.igar15.training_management.entity.User;
+import com.igar15.training_management.entity.Workout;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.service.ExerciseService;
 import com.igar15.training_management.to.ExerciseTo;
@@ -26,23 +28,23 @@ class ExerciseServiceImplTest extends AbstractServiceTest {
     @Test
     void getExercisesByWorkoutIdAndUserId() {
         List<Exercise> exercises = exerciseService.getExercisesByWorkoutIdAndUserId(USER1_WORKOUT1_ID, USER1_ID);
-        assertThat(exercises).isEqualTo(List.of(USER1_WORKOUT1_EXERCISE1, USER1_WORKOUT1_EXERCISE2, USER1_WORKOUT1_EXERCISE3));
+        assertThat(exercises).usingElementComparatorIgnoringFields("workout", "user").isEqualTo(List.of(USER1_WORKOUT1_EXERCISE1, USER1_WORKOUT1_EXERCISE2, USER1_WORKOUT1_EXERCISE3));
     }
 
     @Test
     void getExerciseByIdAndUserId() {
-        Exercise exercise = exerciseService.getExerciseByIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_ID);
+        Exercise exercise = exerciseService.getExerciseByIdAndWorkoutIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER1_ID);
         assertThat(exercise).isEqualTo(USER1_WORKOUT1_EXERCISE1);
     }
 
     @Test
     void getExerciseByIdAndUserIdWhereNotFoundExpected() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndUserId(NOT_FOUND_EXERCISE_ID, USER1_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndWorkoutIdAndUserId(NOT_FOUND_EXERCISE_ID, USER1_WORKOUT1_ID, USER1_ID));
     }
 
     @Test
     void getExerciseByIdAndUserIdNotOwn() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER2_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndWorkoutIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER2_ID));
     }
 
     @Test
@@ -53,7 +55,8 @@ class ExerciseServiceImplTest extends AbstractServiceTest {
         Long createdId = createdExercise.getId();
         newExercise.setId(createdId);
         assertThat(createdExercise).isEqualTo(newExercise);
-        assertThat(exerciseService.getExerciseByIdAndUserId(createdId, USER1_ID)).isEqualTo(newExercise);
+        Exercise exercise = exerciseService.getExerciseByIdAndWorkoutIdAndUserId(createdId, USER1_WORKOUT1_ID, USER1_ID);
+        assertThat(exercise).isEqualTo(newExercise);
     }
 
     @Test
@@ -81,29 +84,29 @@ class ExerciseServiceImplTest extends AbstractServiceTest {
     void updateExercise() {
         ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
         Exercise updatedExerciseExpected = getUpdatedExercise();
-        exerciseService.updateExercise(updatedExerciseTo, USER1_ID);
-        assertThat(exerciseService.getExerciseByIdAndUserId(updatedExerciseExpected.getId(), USER1_ID)).isEqualTo(updatedExerciseExpected);
+        exerciseService.updateExercise(updatedExerciseTo, USER1_WORKOUT1_ID, USER1_ID);
+        assertThat(exerciseService.getExerciseByIdAndWorkoutIdAndUserId(updatedExerciseExpected.getId(), USER1_WORKOUT1_ID, USER1_ID)).isEqualTo(updatedExerciseExpected);
     }
 
     @Test
     void updateExerciseNotOwn() {
         ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.updateExercise(updatedExerciseTo, USER2_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.updateExercise(updatedExerciseTo, USER1_WORKOUT1_ID, USER2_ID));
     }
 
     @Test
     void deleteExercise() {
-        exerciseService.deleteExercise(USER1_WORKOUT1_EXERCISE1_ID, USER1_ID);
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_ID));
+        exerciseService.deleteExercise(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER1_ID);
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndWorkoutIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER1_ID));
     }
 
     @Test
     void deleteExerciseWhereNotFoundExpected() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.deleteExercise(NOT_FOUND_EXERCISE_ID, USER1_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.deleteExercise(NOT_FOUND_EXERCISE_ID, USER1_WORKOUT1_ID, USER1_ID));
     }
 
     @Test
     void deleteExerciseNotOwn() {
-        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.deleteExercise(USER1_WORKOUT1_EXERCISE1_ID, USER2_ID));
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.deleteExercise(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER2_ID));
     }
 }

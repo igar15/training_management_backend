@@ -9,11 +9,11 @@ public interface ExerciseService {
 
     List<Exercise> getExercisesByWorkoutIdAndUserId(long workoutId, long userId);
 
-    Exercise getExerciseByIdAndUserId(long id, long userId);
+    Exercise getExerciseByIdAndWorkoutIdAndUserId(long id, long workoutId, long userId);
 
     Exercise createExercise(ExerciseTo exerciseTo, long userId);
 
-    Exercise updateExercise(ExerciseTo exerciseTo, long userId);
+    Exercise updateExercise(ExerciseTo exerciseTo, long workoutId, long userId);
 
-    void deleteExercise(long id, long userId);
+    void deleteExercise(long id, long workoutId, long userId);
 }

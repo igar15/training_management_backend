@@ -34,12 +34,13 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public List<Exercise> getExercisesByWorkoutIdAndUserId(long workoutId, long userId) {
+        workoutService.getWorkoutById(workoutId, userId); // check for own workout
         return exerciseRepository.findAllByWorkout_IdAndUser_Id(workoutId, userId);
     }
 
     @Override
-    public Exercise getExerciseByIdAndUserId(long id, long userId) {
-        return exerciseRepository.findByIdAndUser_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
+    public Exercise getExerciseByIdAndWorkoutIdAndUserId(long id, long workoutId, long userId) {
+        return exerciseRepository.findByIdAndWorkout_IdAndUser_Id(id, workoutId, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
     }
 
     @Override
@@ -59,18 +60,18 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     @Transactional
-    public Exercise updateExercise(ExerciseTo exerciseTo, long userId) {
+    public Exercise updateExercise(ExerciseTo exerciseTo, long workoutId, long userId) {
         Assert.notNull(exerciseTo, "Exercise must not be null");
         long id = exerciseTo.getId();
-        Exercise exercise = exerciseRepository.findByIdAndUser_Id(id, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
+        Exercise exercise = exerciseRepository.findByIdAndWorkout_IdAndUser_Id(id, workoutId, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
         exercise.setQuantity(exerciseTo.getQuantity());
         exerciseRepository.save(exercise);
         return exercise;
     }
 
     @Override
-    public void deleteExercise(long id, long userId) {
-        Exercise exercise = getExerciseByIdAndUserId(id, userId);
+    public void deleteExercise(long id, long workoutId, long userId) {
+        Exercise exercise = getExerciseByIdAndWorkoutIdAndUserId(id, workoutId, userId);
         exerciseRepository.delete(exercise);
     }
 }

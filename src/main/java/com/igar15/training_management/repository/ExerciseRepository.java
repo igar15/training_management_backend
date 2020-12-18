@@ -17,6 +17,6 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     List<Exercise> findAllByWorkout_IdAndUser_Id(long workoutId, long userId);
 
     @EntityGraph(attributePaths = "exerciseType")
-    Optional<Exercise> findByIdAndUser_Id(long id, long userId);
+    Optional<Exercise> findByIdAndWorkout_IdAndUser_Id(long id, long workoutId, long userId);
 
 }

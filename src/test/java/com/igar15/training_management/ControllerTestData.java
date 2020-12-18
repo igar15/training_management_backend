@@ -10,6 +10,7 @@ public class ControllerTestData {
     public static final String USERS_URI = "/users";
     public static final String EXERCISE_TYPES_URI = "/exerciseTypes";
     public static final String WORKOUTS_URI = "/workouts";
+    public static final String EXERCISES_URI = "/exercises";
 
     public static final MyHttpResponse FORBIDDEN_RESPONSE = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN,
             HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.FORBIDDEN_MESSAGE);
@@ -197,5 +198,22 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "WORKOUTTO{ID=10, DATETIME=2020-12-04T13:40} MUST BE WITH ID=1009");
+
+
+
+    public static final MyHttpResponse EXERCISE_NOT_OWN_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND EXERCISE WITH ID: 1020");
+
+    public static final MyHttpResponse EXERCISE_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND EXERCISE WITH ID: 10");
+
+    public static final MyHttpResponse EXERCISE_NOT_FOUND_FOR_DIFFERENT_WORKOUT_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND EXERCISE WITH ID: 1014");
 
 }
