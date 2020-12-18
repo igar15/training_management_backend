@@ -193,4 +193,9 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: DATETIME MUST NOT BE NULL");
 
+    public static final MyHttpResponse WORKOUT_MUST_BE_WITH_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "WORKOUTTO{ID=10, DATETIME=2020-12-04T13:40} MUST BE WITH ID=1009");
+
 }
