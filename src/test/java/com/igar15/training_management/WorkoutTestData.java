@@ -28,7 +28,7 @@ public class WorkoutTestData {
 
     public static final Pageable PAGEABLE = PageRequest.of(0, 10);
 
-    public static final Page<Workout> PAGE = new PageImpl<>(List.of(USER1_WORKOUT3, USER1_WORKOUT2, USER1_WORKOUT1), PAGEABLE, 3);
+    public static final Page<Workout> PAGE = new PageImpl<>(List.of(USER1_WORKOUT1, USER1_WORKOUT2, USER1_WORKOUT3), PAGEABLE, 3);
 
     public static WorkoutTo getNewWorkoutTo() {
         return new WorkoutTo(null, LocalDateTime.parse("2020-12-03 18:20:00", DATE_TIME_FORMATTER));

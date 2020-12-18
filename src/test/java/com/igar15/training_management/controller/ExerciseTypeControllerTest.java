@@ -148,6 +148,19 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void createExerciseTypeWhenUnAuth() throws Exception {
+        ExerciseTypeTo newExerciseTypeTo = getNewExerciseTypeTo();
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/" + ADMIN_ID + EXERCISE_TYPES_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newExerciseTypeTo)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(FORBIDDEN_RESPONSE);
+    }
+
+    @Test
     void createExerciseTypeNotOwnWhenUserTry() throws Exception {
         ExerciseTypeTo newExerciseTypeTo = getNewExerciseTypeTo();
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/" + ADMIN_ID + EXERCISE_TYPES_URI)

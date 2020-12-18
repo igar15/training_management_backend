@@ -28,7 +28,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public Page<Workout> getWorkouts(Pageable pageable, long userId) {
-        return workoutRepository.findAllByUser_IdOrderByDateTimeDesc(pageable, userId);
+        return workoutRepository.findAllByUser_Id(pageable, userId);
     }
 
     @Override

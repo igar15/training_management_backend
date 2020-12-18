@@ -14,7 +14,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
-    Page<Workout> findAllByUser_IdOrderByDateTimeDesc(Pageable pageable, long userId);
+    Page<Workout> findAllByUser_Id(Pageable pageable, long userId);
 
     Optional<Workout> findByIdAndUser_Id(long id, long userId);
 

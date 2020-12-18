@@ -208,6 +208,24 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getAllUsersWhenAdminTryWithPaginationWhenSecondPageRequested() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&size=2").headers(adminJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        List<User> users = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), User.class);
+        assertThat(users).usingDefaultElementComparator().isEqualTo(List.of(USER2, USER3));
+    }
+
+    @Test
+    void getAllUsersWhenAdminTryWithPaginationWhenSecondPageAndDescSortedByEmailRequested() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&size=2&sort=email,desc").headers(adminJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        List<User> users = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), User.class);
+        assertThat(users).usingDefaultElementComparator().isEqualTo(List.of(USER1, ADMIN));
+    }
+
+    @Test
     void getAllUsersWhenUnAuth() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())

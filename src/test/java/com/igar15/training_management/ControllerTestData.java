@@ -173,4 +173,24 @@ public class ControllerTestData {
 
 
 
+
+    public static final MyHttpResponse WORKOUT_NOT_OWN_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND WORKOUT WITH ID: 1012");
+
+    public static final MyHttpResponse WORKOUT_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND WORKOUT WITH ID: 10");
+
+    public static final MyHttpResponse WORKOUT_ALREADY_EXIST_RESPONSE = new MyHttpResponse(HttpStatus.CONFLICT.value(),
+            HttpStatus.CONFLICT,
+            HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(),
+            "WORKOUT WITH DATE 2020-11-28 AND TIME 13:00 ALREADY EXISTS");
+
+    public static final MyHttpResponse NOT_VALID_WORKOUT_DATETIME_NULL_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: DATETIME MUST NOT BE NULL");
+
 }

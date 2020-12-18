@@ -23,13 +23,13 @@ import java.time.LocalDateTime;
 @Table(name = "workouts")
 public class Workout extends AbstractBaseEntity {
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = "date_time")
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    @Schema(example = "2020-12-16 15:30")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(example = "2020-12-16 15:30:20")
     private LocalDateTime dateTime;
 
     @JsonIgnore

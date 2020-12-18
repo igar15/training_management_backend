@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +44,7 @@ public class WorkoutController {
     @GetMapping("/{userId}/workouts")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.id")
     @ApiOperation(value = "${workoutController.GetWorkouts.ApiOperation.Value}", notes = "${workoutController.GetWorkouts.ApiOperation.Notes}")
-    public ResponseEntity<Page<Workout>> getWorkouts(@PathVariable("userId") long userId, Pageable pageable) {
+    public ResponseEntity<Page<Workout>> getWorkouts(@PathVariable("userId") long userId, @SortDefault(value = "dateTime", direction = Sort.Direction.DESC) Pageable pageable) {
         log.info("get all workouts with pagination=( {} ) for user id={}", pageable, userId);
         Page<Workout> workouts = workoutService.getWorkouts(pageable, userId);
         return new ResponseEntity<>(workouts, HttpStatus.OK);
