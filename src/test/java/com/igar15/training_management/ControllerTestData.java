@@ -216,4 +216,22 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "NOT FOUND EXERCISE WITH ID: 1014");
 
+    public static final MyHttpResponse EXERCISE_MUST_BE_WITH_WORKOUT_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "EXERCISETO{ID=NULL, QUANTITY=100, WORKOUTID=1012, EXERCISETYPEID=1004} MUST BE WITH WORKOUT ID=1009");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_QUANTITY_MIN_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: QUANTITY MUST BE MORE THAN ZERO");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_EXERCISE_TYPE_ID_NULL_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: EXERCISE TYPE ID MUST NOT BE NULL");
+
+    public static final MyHttpResponse NOT_VALID_EXERCISE_WORKOUT_ID_NULL_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: WORKOUT ID MUST NOT BE NULL");
+
+
 }
