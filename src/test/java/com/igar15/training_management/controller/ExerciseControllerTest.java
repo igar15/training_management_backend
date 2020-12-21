@@ -2,10 +2,14 @@ package com.igar15.training_management.controller;
 
 import com.igar15.training_management.*;
 import com.igar15.training_management.entity.Exercise;
+import com.igar15.training_management.exceptions.MyEntityNotFoundException;
+import com.igar15.training_management.service.ExerciseService;
 import com.igar15.training_management.to.ExerciseTo;
 import com.igar15.training_management.to.MyHttpResponse;
 import com.igar15.training_management.utils.JsonUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,6 +25,9 @@ import static com.igar15.training_management.WorkoutTestData.*;
 import static org.assertj.core.api.Assertions.*;
 
 class ExerciseControllerTest extends AbstractControllerTest {
+
+    @Autowired
+    private ExerciseService exerciseService;
 
     @Test
     void getExercise() throws Exception {
@@ -388,7 +395,21 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteExercise() {
+    void deleteExercise() throws Exception {
+        perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndWorkoutIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER1_ID));
+    }
+
+    @Test
+    void deleteExerciseWhenUnAuth() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(FORBIDDEN_RESPONSE);
     }
 
     private ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
