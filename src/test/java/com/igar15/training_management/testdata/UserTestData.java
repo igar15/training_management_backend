@@ -22,6 +22,8 @@ public class UserTestData {
     public static final String ADMIN_EMAIL = "admin@test.ru";
     public static final String USER2_EXPIRED_VERIFICATION_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJUcmFpbmluZyBtYW5hZ2VtZW50IFBvcnRhbCIsInN1YiI6InVzZXIyQHRlc3QucnUiLCJpc3MiOiJUcmFpbmluZyBtYW5hZ2VtZW50LCBMTEMiLCJleHAiOjE2MDgwNDg5ODcsImlhdCI6MTYwODEzNTM4N30.wTHbFC29jK8vtbzlfpfeu4VvtJsBaSp4Msz-DMKOHgtMsZ4LacMuSWJOcHO_jL0-UA9_FzHo6dhipqg7jYZOqQ";
     public static final String USER2_NOT_VALID_VERIFICATION_TOKEN = "eyJ0eXAiOiJKV1QiLCvcvcxGciOiJIUzUxMiJ9.cxdvdvfdvdvd.Np_feN7bAvZRfsRf3XzyPBC1riFdfsEs5OKJnOL9iqX-zqvL1sOxe3iWGGw608umJzcALoLzxkPK0UlHlvCx0zg";
+    public static final String BAD_PASSWORD = "badpassword";
+    public static final String NEW_PASSWORD = "newpassword";
 
     public static final User USER1 = new User(USER1_ID, "user1", "user1@test.ru", "$2y$10$mM4j46rI5jEwIa4FjZZUdOCD1VgO0.KovMo4ZDhcS/Tvg8v4aV4TO", true, true, Role.ROLE_USER);
     public static final User USER2 = new User(USER2_ID, "user2", "user2@test.ru", "123456", false, true, Role.ROLE_USER);
@@ -34,11 +36,11 @@ public class UserTestData {
     public static final Page<User> PAGE1_SIZE2 = new PageImpl<>(List.of(USER3, ADMIN), PAGEABLE_PAGE1_SIZE2, 4);
 
     public static UserTo getNewUserTo() {
-        return new UserTo(null, "new user", "newemail@test.com", "newpassword");
+        return new UserTo(null, "new user", "newemail@test.com", NEW_PASSWORD);
     }
 
     public static User getNewUser() {
-        return new User(null, "new user", "newemail@test.com", "newpassword", Role.ROLE_USER);
+        return new User(null, "new user", "newemail@test.com", NEW_PASSWORD, Role.ROLE_USER);
     }
 
     public static UserTo getUpdatedUserTo() {

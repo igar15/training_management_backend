@@ -68,7 +68,7 @@ public class ControllerTestData {
     public static final MyHttpResponse USER_MUST_BE_NEW_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
-            "USERTO{ID=100, NAME='NEW USER', EMAIL='NEWEMAIL@TEST.COM'} MUST BE NEW (ID=NULL)");
+            "USERTO{ID=10, NAME='NEW USER', EMAIL='NEWEMAIL@TEST.COM'} MUST BE NEW (ID=NULL)");
 
     public static final MyHttpResponse USER_MUST_BE_WITH_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
             HttpStatus.UNPROCESSABLE_ENTITY,

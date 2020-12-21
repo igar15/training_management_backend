@@ -64,7 +64,7 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void loginWhenBadCredentialsPassed() throws Exception {
         UserTo loginUserTo = getLoginUserTo();
-        loginUserTo.setPassword("12345678");
+        loginUserTo.setPassword(BAD_PASSWORD);
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(loginUserTo)))
@@ -79,7 +79,7 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void loginWhenBadCredentialsPassedFiveTimes() throws Exception {
         UserTo loginUserTo = getLoginUserTo();
-        loginUserTo.setPassword("12345678");
+        loginUserTo.setPassword(BAD_PASSWORD);
         for (int i = 0; i < 5; i++) {
             perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -319,7 +319,7 @@ class UserControllerTest extends AbstractControllerTest {
         Assertions.assertTrue(myHttpResponse.getMessage().contains("PASSWORD MUST NOT BE BLANK"));
 
         newUserTo = getNewUserTo();
-        newUserTo.setId(100L);
+        newUserTo.setId(NOT_FOUND_USER_ID);
         resultActions = getResultActionsWhenToNotValid(newUserTo, USERS_URI);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
@@ -443,7 +443,7 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteUserWhenNotOwnUserTry() throws Exception {
+    void deleteUserNotOwnWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER2_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
@@ -453,7 +453,7 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteUserWhenNotOwnAdminTry() throws Exception {
+    void deleteUserNotOwnWhenAdminTry() throws Exception {
         perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID)
                 .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -461,7 +461,7 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteUserWhenNotFoundAdminTry() throws Exception {
+    void deleteUserNotFoundWhenAdminTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + NOT_FOUND_USER_ID)
                 .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -583,7 +583,7 @@ class UserControllerTest extends AbstractControllerTest {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found password reset token for email: " + USER1.getEmail()));
         PasswordResetModel passwordResetModel = new PasswordResetModel();
         passwordResetModel.setToken(passwordResetToken.getToken());
-        passwordResetModel.setPassword("newpassword");
+        passwordResetModel.setPassword(NEW_PASSWORD);
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/resetPassword")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(passwordResetModel)))
@@ -592,14 +592,14 @@ class UserControllerTest extends AbstractControllerTest {
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_SUCCESS_RESPONSE);
         User user = userService.getUserByEmail(USER1.getEmail());
-        Assertions.assertTrue(BCrypt.checkpw("newpassword", user.getPassword()));
+        Assertions.assertTrue(BCrypt.checkpw(NEW_PASSWORD, user.getPassword()));
     }
 
     @Test
     void resetPasswordWhenTokenIsExpired() throws Exception {
         PasswordResetModel passwordResetModel = new PasswordResetModel();
         passwordResetModel.setToken(USER2_EXPIRED_VERIFICATION_TOKEN);
-        passwordResetModel.setPassword("newpassword");
+        passwordResetModel.setPassword(NEW_PASSWORD);
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/resetPassword")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(passwordResetModel)))
@@ -613,7 +613,7 @@ class UserControllerTest extends AbstractControllerTest {
     void resetPasswordWhenTokenIsNotValid() throws Exception {
         PasswordResetModel passwordResetModel = new PasswordResetModel();
         passwordResetModel.setToken(USER2_NOT_VALID_VERIFICATION_TOKEN);
-        passwordResetModel.setPassword("newpassword");
+        passwordResetModel.setPassword(NEW_PASSWORD);
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/resetPassword")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(passwordResetModel)))
@@ -627,7 +627,7 @@ class UserControllerTest extends AbstractControllerTest {
     void resetPasswordWhenPasswordResetModelIsNotValid() throws Exception {
         PasswordResetModel passwordResetModel = new PasswordResetModel();
         passwordResetModel.setToken(null);
-        passwordResetModel.setPassword("newpassword");
+        passwordResetModel.setPassword(NEW_PASSWORD);
         ResultActions resultActions = getResultActionsWhenToNotValid(passwordResetModel, USERS_URI + "/resetPassword");
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
