@@ -1,11 +1,8 @@
 package com.igar15.training_management.service.impl;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.igar15.training_management.AbstractServiceTest;
-import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.EmailExistException;
@@ -19,13 +16,11 @@ import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.validation.ConstraintViolationException;
 
-import java.util.Date;
 
 import static com.igar15.training_management.testdata.UserTestData.*;
 import static org.assertj.core.api.Assertions.*;
@@ -40,9 +35,6 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private Environment environment;
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -110,9 +102,6 @@ class UserServiceImplTest extends AbstractServiceTest {
         validateRootCause(() -> userService.createUser(new UserTo(null, null, "test@test.com", "123456")), ConstraintViolationException.class);
         validateRootCause(() -> userService.createUser(new UserTo(null, "", "test@test.com", "123456")), ConstraintViolationException.class);
         validateRootCause(() -> userService.createUser(new UserTo(null, "a", "test@test.com", "123456")), ConstraintViolationException.class);
-//        validateRootCause(() -> userService.createUser(new UserTo(null, "test", null, "123456")), ConstraintViolationException.class);
-//        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "", "123456")), ConstraintViolationException.class);
-//        validateRootCause(() -> userService.createUser(new UserTo(null, "test", "testtest.com", "123456")), ConstraintViolationException.class);
     }
 
     @Test
@@ -155,7 +144,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void verifyEmailTokenWhereTokenExpiredExpected() {
-        String token = makeExpiredToken();
+        String token = USER2_EXPIRED_VERIFICATION_TOKEN;
         User user = userService.getUserById(USER2_ID);
         user.setEmailVerificationToken(token);
         userRepository.save(user);
@@ -169,7 +158,7 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void resetPasswordWhereTokenExpiredExpected() {
-        String token = makeExpiredToken();
+        String token = USER2_EXPIRED_VERIFICATION_TOKEN;
         Assertions.assertThrows(TokenExpiredException.class, () -> userService.resetPassword(token, "123456"));
     }
 
@@ -191,13 +180,4 @@ class UserServiceImplTest extends AbstractServiceTest {
         Assertions.assertFalse(userService.getUserById(USER1_ID).isEnabled());
     }
 
-
-
-    private String makeExpiredToken() {
-        return JWT.create()
-                .withIssuedAt(new Date())
-                .withSubject(USER2.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() - SecurityConstant.EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME))
-                .sign(Algorithm.HMAC512(environment.getProperty("jwt.secretKey")));
-    }
 }
