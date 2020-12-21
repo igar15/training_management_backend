@@ -48,7 +48,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getWorkoutNotOwnWithOwnUserIdWhenUserTry() throws Exception {
+    void getWorkoutNotOwnWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -59,7 +59,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getWorkoutNotOwnWithNotOwnUserIdWhenUserTry() throws Exception {
+    void getWorkoutWithNotOwnUserIdWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + ADMIN_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
@@ -97,7 +97,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<Workout> workouts = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), Workout.class);
-        assertThat(workouts).usingDefaultElementComparator().isEqualTo(List.of(USER1_WORKOUT3, USER1_WORKOUT2, USER1_WORKOUT1));
+        assertThat(workouts).usingRecursiveComparison().isEqualTo(List.of(USER1_WORKOUT3, USER1_WORKOUT2, USER1_WORKOUT1));
     }
 
     @Test
@@ -107,7 +107,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<Workout> workouts = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), Workout.class);
-        assertThat(workouts).usingDefaultElementComparator().isEqualTo(List.of(USER1_WORKOUT1));
+        assertThat(workouts).usingRecursiveComparison().isEqualTo(List.of(USER1_WORKOUT1));
     }
 
     @Test
@@ -117,7 +117,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<Workout> workouts = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), Workout.class);
-        assertThat(workouts).usingDefaultElementComparator().isEqualTo(List.of(USER1_WORKOUT3));
+        assertThat(workouts).usingRecursiveComparison().isEqualTo(List.of(USER1_WORKOUT3));
     }
 
     @Test
@@ -148,7 +148,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<Workout> workouts = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), Workout.class);
-        assertThat(workouts).usingDefaultElementComparator().isEqualTo(List.of(USER1_WORKOUT3, USER1_WORKOUT2, USER1_WORKOUT1));
+        assertThat(workouts).usingRecursiveComparison().isEqualTo(List.of(USER1_WORKOUT3, USER1_WORKOUT2, USER1_WORKOUT1));
     }
 
     @Test
@@ -259,7 +259,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateWorkoutNotOwnWithOwnUserIdWhenUserTry() throws Exception {
+    void updateWorkoutNotOwnWhenUserTry() throws Exception {
         WorkoutTo updatedWorkoutTo = getUpdatedWorkoutTo();
         updatedWorkoutTo.setId(ADMIN_WORKOUT1_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID)
@@ -274,7 +274,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateWorkoutNotOwnWithNotOwnUserIdWhenUserTry() throws Exception {
+    void updateWorkoutWithNotOwnUserIdWhenUserTry() throws Exception {
         WorkoutTo updatedWorkoutTo = getUpdatedWorkoutTo();
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + ADMIN_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID)
                 .headers(userJwtHeader)
@@ -350,7 +350,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteWorkoutNotOwnWithOwnUserIdWhenUserTry() throws Exception {
+    void deleteWorkoutNotOwnWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -361,7 +361,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteWorkoutNotOwnWithNotOwnUserIdWhenUserTry() throws Exception {
+    void deleteWorkoutWithNotOwnUserIdWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + ADMIN_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())

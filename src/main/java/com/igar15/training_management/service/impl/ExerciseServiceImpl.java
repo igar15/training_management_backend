@@ -40,6 +40,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public Exercise getExerciseByIdAndWorkoutIdAndUserId(long id, long workoutId, long userId) {
+        workoutService.getWorkoutById(workoutId, userId); // check for own workout
         return exerciseRepository.findByIdAndWorkout_IdAndUser_Id(id, workoutId, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
     }
 

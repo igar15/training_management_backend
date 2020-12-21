@@ -50,7 +50,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getExerciseNotOwnWithOwnUserIdAndOwnWorkoutIdWhenUserTry() throws Exception {
+    void getExerciseNotOwnWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + ADMIN_WORKOUT1_EXERCISE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -61,18 +61,18 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getExerciseNotOwnWithOwnUserIdAndNotOwnWorkoutIdWhenUserTry() throws Exception {
+    void getExerciseWhenNotOwnWorkoutIdWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI + "/" + ADMIN_WORKOUT1_EXERCISE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
-                .ignoringFields("timeStamp").isEqualTo(EXERCISE_NOT_OWN_NOT_FOUND_RESPONSE);
+                .ignoringFields("timeStamp").isEqualTo(WORKOUT_NOT_OWN_NOT_FOUND_RESPONSE);
     }
 
     @Test
-    void getExerciseNotOwnWithNotOwnUserIdAndNotOwnWorkoutIdWhenUserTry() throws Exception {
+    void getExerciseWhenNotOwnUserIdWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + ADMIN_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI + "/" + ADMIN_WORKOUT1_EXERCISE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
@@ -104,17 +104,6 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getExerciseNotFoundForDifferentWorkout() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT2_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
-                .headers(userJwtHeader))
-                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
-        assertThat(myHttpResponse).usingRecursiveComparison()
-                .ignoringFields("timeStamp").isEqualTo(EXERCISE_NOT_FOUND_FOR_DIFFERENT_WORKOUT_RESPONSE);
-    }
-
-    @Test
     void getAllExercises() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI)
                 .headers(userJwtHeader))
@@ -135,7 +124,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getAllExercisesWhenWorkoutNotOwnAndOwnUserIdAndUserTry() throws Exception {
+    void getAllExercisesWhenWorkoutNotOwnAndUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -146,7 +135,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getAllExercisesWhenWorkoutNotOwnAndNotOwnUserIdAndUserTry() throws Exception {
+    void getAllExercisesWhenNotOwnUserIdAndUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + ADMIN_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
@@ -196,7 +185,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createExerciseWhenWorkoutIdInUrlNotOwnAndOwnUserIdAndUserTry() throws Exception {
+    void createExerciseWhenWorkoutIdInUrlNotOwnAndUserTry() throws Exception {
         ExerciseTo newExerciseTo = getNewExerciseTo();
         newExerciseTo.setWorkoutId(ADMIN_WORKOUT1_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI)
@@ -306,7 +295,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateExerciseNotOwnWithOwnWorkoutIdAndOwnUserIdWhenUserTry() throws Exception {
+    void updateExerciseNotOwnWhenUserTry() throws Exception {
         ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
         updatedExerciseTo.setId(ADMIN_WORKOUT1_EXERCISE1_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + ADMIN_WORKOUT1_EXERCISE1_ID)
@@ -321,7 +310,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateExerciseNotOwnWithNotOwnWorkoutIdInUrlAndOwnUserId() throws Exception {
+    void updateExerciseWhenNotOwnWorkoutIdInUrl() throws Exception {
         ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
         updatedExerciseTo.setWorkoutId(ADMIN_WORKOUT1_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
@@ -336,7 +325,7 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateExerciseWithNotOwnWorkoutIdInToAndOwnUserId() throws Exception {
+    void updateExerciseWithNotOwnWorkoutIdInTo() throws Exception {
         ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
         updatedExerciseTo.setWorkoutId(NOT_FOUND_WORKOUT_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)

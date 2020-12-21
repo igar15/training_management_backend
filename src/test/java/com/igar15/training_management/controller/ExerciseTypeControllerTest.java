@@ -48,7 +48,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getExerciseTypeNotOwnWithOwnUserIdWhenUserTry() throws Exception {
+    void getExerciseTypeNotOwnWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID + EXERCISE_TYPES_URI + "/" + ADMIN_EXERCISE_TYPE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -59,7 +59,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getExerciseTypeNotOwnWithNotOwnUserIdWhenUserTry() throws Exception {
+    void getExerciseTypeWithNotOwnUserIdWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + ADMIN_ID + EXERCISE_TYPES_URI + "/" + ADMIN_EXERCISE_TYPE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
@@ -97,7 +97,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<ExerciseType> exerciseTypes = JsonUtil.readValues(resultActions.andReturn().getResponse().getContentAsString(), ExerciseType.class);
-        assertThat(exerciseTypes).usingDefaultElementComparator().isEqualTo(List.of(USER1_EXERCISE_TYPE1, USER1_EXERCISE_TYPE2, USER1_EXERCISE_TYPE3));
+        assertThat(exerciseTypes).usingRecursiveComparison().isEqualTo(List.of(USER1_EXERCISE_TYPE1, USER1_EXERCISE_TYPE2, USER1_EXERCISE_TYPE3));
     }
 
     @Test
@@ -128,7 +128,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<ExerciseType> exerciseTypes = JsonUtil.readValues(resultActions.andReturn().getResponse().getContentAsString(), ExerciseType.class);
-        assertThat(exerciseTypes).usingDefaultElementComparator().isEqualTo(List.of(USER1_EXERCISE_TYPE1, USER1_EXERCISE_TYPE2, USER1_EXERCISE_TYPE3));
+        assertThat(exerciseTypes).usingRecursiveComparison().isEqualTo(List.of(USER1_EXERCISE_TYPE1, USER1_EXERCISE_TYPE2, USER1_EXERCISE_TYPE3));
     }
 
     @Test
@@ -258,7 +258,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateExerciseTypeNotOwnWithOwnUserIdWhenUserTry() throws Exception {
+    void updateExerciseTypeNotOwnWhenUserTry() throws Exception {
         ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
         updatedExerciseTypeTo.setId(ADMIN_EXERCISE_TYPE1_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + EXERCISE_TYPES_URI + "/" + ADMIN_EXERCISE_TYPE1_ID)
@@ -273,7 +273,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateExerciseTypeNotOwnWithNotOwnUserIdWhenUserTry() throws Exception {
+    void updateExerciseTypeWithNotOwnUserIdWhenUserTry() throws Exception {
         ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
         updatedExerciseTypeTo.setId(ADMIN_EXERCISE_TYPE1_ID);
         ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + ADMIN_ID + EXERCISE_TYPES_URI + "/" + ADMIN_EXERCISE_TYPE1_ID)
@@ -350,7 +350,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteExerciseTypeNotOwnWithOwnUserIdWhenUserTry() throws Exception {
+    void deleteExerciseTypeNotOwnWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + EXERCISE_TYPES_URI + "/" + ADMIN_EXERCISE_TYPE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
@@ -361,7 +361,7 @@ class ExerciseTypeControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteExerciseTypeNotOwnWithNotOwnUserIdWhenUserTry() throws Exception {
+    void deleteExerciseTypeWithNotOwnUserIdWhenUserTry() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + ADMIN_ID + EXERCISE_TYPES_URI + "/" + ADMIN_EXERCISE_TYPE1_ID)
                 .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
