@@ -13,8 +13,8 @@ import org.springframework.data.domain.Page;
 
 import javax.validation.ConstraintViolationException;
 
-import static com.igar15.training_management.UserTestData.*;
-import static com.igar15.training_management.WorkoutTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
+import static com.igar15.training_management.testdata.WorkoutTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class WorkoutServiceImplTest extends AbstractServiceTest {

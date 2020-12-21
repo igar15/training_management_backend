@@ -1,4 +1,4 @@
-package com.igar15.training_management;
+package com.igar15.training_management.testdata;
 
 import com.igar15.training_management.entity.Workout;
 import com.igar15.training_management.to.WorkoutTo;

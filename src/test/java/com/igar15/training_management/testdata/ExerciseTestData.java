@@ -1,10 +1,10 @@
-package com.igar15.training_management;
+package com.igar15.training_management.testdata;
 
 import com.igar15.training_management.entity.Exercise;
 import com.igar15.training_management.to.ExerciseTo;
 
-import static com.igar15.training_management.ExerciseTypeTestData.*;
-import static com.igar15.training_management.WorkoutTestData.*;
+import static com.igar15.training_management.testdata.ExerciseTypeTestData.*;
+import static com.igar15.training_management.testdata.WorkoutTestData.*;
 
 public class ExerciseTestData {
 

@@ -2,8 +2,6 @@ package com.igar15.training_management.service.impl;
 
 import com.igar15.training_management.AbstractServiceTest;
 import com.igar15.training_management.entity.Exercise;
-import com.igar15.training_management.entity.User;
-import com.igar15.training_management.entity.Workout;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.service.ExerciseService;
 import com.igar15.training_management.to.ExerciseTo;
@@ -14,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-import static com.igar15.training_management.ExerciseTestData.*;
-import static com.igar15.training_management.ExerciseTypeTestData.*;
-import static com.igar15.training_management.UserTestData.*;
-import static com.igar15.training_management.WorkoutTestData.*;
+import static com.igar15.training_management.testdata.ExerciseTestData.*;
+import static com.igar15.training_management.testdata.ExerciseTypeTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
+import static com.igar15.training_management.testdata.WorkoutTestData.*;
 import static org.assertj.core.api.Assertions.*;
 
 class ExerciseServiceImplTest extends AbstractServiceTest {

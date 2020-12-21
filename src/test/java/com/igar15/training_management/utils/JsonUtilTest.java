@@ -1,6 +1,5 @@
 package com.igar15.training_management.utils;
 
-import com.igar15.training_management.UserTestData;
 import com.igar15.training_management.entity.ExerciseType;
 import com.igar15.training_management.entity.User;
 import org.assertj.core.api.Assertions;
@@ -8,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.igar15.training_management.ExerciseTypeTestData.*;
-import static com.igar15.training_management.UserTestData.*;
+import static com.igar15.training_management.testdata.ExerciseTypeTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
 
 class JsonUtilTest {
 

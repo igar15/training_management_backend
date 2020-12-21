@@ -1,4 +1,4 @@
-package com.igar15.training_management;
+package com.igar15.training_management.testdata;
 
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.exceptions.handler.MyExceptionHandler;

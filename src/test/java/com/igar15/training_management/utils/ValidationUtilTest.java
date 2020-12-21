@@ -1,6 +1,5 @@
 package com.igar15.training_management.utils;
 
-import com.igar15.training_management.UserTestData;
 import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.to.UserTo;
 import org.junit.jupiter.api.Assertions;
@@ -9,8 +8,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import static com.igar15.training_management.UserTestData.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
 
 class ValidationUtilTest {
 

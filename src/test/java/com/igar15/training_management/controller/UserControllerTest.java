@@ -25,8 +25,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-import static com.igar15.training_management.ControllerTestData.*;
-import static com.igar15.training_management.UserTestData.*;
+import static com.igar15.training_management.testdata.ControllerTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
 import static org.assertj.core.api.Assertions.*;
 
 class UserControllerTest extends AbstractControllerTest {
@@ -77,6 +77,29 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void loginWhenBadCredentialsPassedFiveTimes() throws Exception {
+        UserTo loginUserTo = getLoginUserTo();
+        loginUserTo.setPassword("12345678");
+        for (int i = 0; i < 5; i++) {
+            perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(JsonUtil.writeValue(loginUserTo)))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        }
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(loginUserTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        Assertions.assertNull(resultActions.andReturn().getResponse().getHeader(SecurityConstant.JWT_AUTHORIZATION_TOKEN_HEADER));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(LOCKED_RESPONSE);
+        loginAttemptService.evictUserFromLoginAttemptCache(USER1.getEmail());
+    }
+
+    @Test
     void loginWhenUserDisabled() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,29 +126,6 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void loginWhenBadCredentialsPassedFiveTimes() throws Exception {
-        UserTo loginUserTo = getLoginUserTo();
-        loginUserTo.setPassword("12345678");
-        for (int i = 0; i < 5; i++) {
-            perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtil.writeValue(loginUserTo)))
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                    .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        }
-        ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(loginUserTo)))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        Assertions.assertNull(resultActions.andReturn().getResponse().getHeader(SecurityConstant.JWT_AUTHORIZATION_TOKEN_HEADER));
-        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
-        assertThat(myHttpResponse).usingRecursiveComparison()
-                .ignoringFields("timeStamp").isEqualTo(LOCKED_RESPONSE);
-        loginAttemptService.evictUserFromLoginAttemptCache(USER1.getEmail());
-    }
-
-    @Test
     void getUser() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID)
                 .headers(userJwtHeader))
@@ -149,7 +149,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getUserNotOwnWhenUserTry() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER2_ID).headers(userJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER2_ID)
+                .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
@@ -159,7 +160,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getUserNotOwnWhenAdminTry() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID).headers(adminJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID)
+                .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         User user = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), User.class);
@@ -169,7 +171,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getUserNotFoundWhenAdminTry() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + NOT_FOUND_USER_ID).headers(adminJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + NOT_FOUND_USER_ID)
+                .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
@@ -180,7 +183,8 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void getUserWhenNotFound() throws Exception {
         userService.deleteUser(USER1_ID);
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID).headers(userJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/" + USER1_ID)
+                .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
@@ -190,7 +194,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllUsersWhenUserTry() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI).headers(userJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI)
+                .headers(userJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
@@ -200,7 +205,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllUsersWhenAdminTry() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI).headers(adminJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI)
+                .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<User> users = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), User.class);
@@ -209,7 +215,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllUsersWhenAdminTryWithPaginationWhenSecondPageRequested() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&size=2").headers(adminJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&size=2")
+                .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<User> users = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), User.class);
@@ -218,7 +225,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllUsersWhenAdminTryWithPaginationWhenSecondPageAndDescSortedByEmailRequested() throws Exception {
-        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&size=2&sort=email,desc").headers(adminJwtHeader))
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&size=2&sort=email,desc")
+                .headers(adminJwtHeader))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
         List<User> users = JsonUtil.readValuesFromPage(resultActions.andReturn().getResponse().getContentAsString(), User.class);
@@ -648,14 +656,6 @@ class UserControllerTest extends AbstractControllerTest {
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
-    }
-
-    private ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
-        return perform(MockMvcRequestBuilders.post(urlTemplate)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(to)))
-                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
 }

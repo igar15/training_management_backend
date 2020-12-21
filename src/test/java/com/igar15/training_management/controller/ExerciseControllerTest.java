@@ -17,11 +17,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-import static com.igar15.training_management.ControllerTestData.*;
-import static com.igar15.training_management.ExerciseTestData.*;
-import static com.igar15.training_management.ExerciseTypeTestData.*;
-import static com.igar15.training_management.UserTestData.*;
-import static com.igar15.training_management.WorkoutTestData.*;
+import static com.igar15.training_management.testdata.ControllerTestData.*;
+import static com.igar15.training_management.testdata.ExerciseTestData.*;
+import static com.igar15.training_management.testdata.ExerciseTypeTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
+import static com.igar15.training_management.testdata.WorkoutTestData.*;
 import static org.assertj.core.api.Assertions.*;
 
 class ExerciseControllerTest extends AbstractControllerTest {
@@ -244,35 +244,35 @@ class ExerciseControllerTest extends AbstractControllerTest {
     void createExerciseWithNotValidAttributes() throws Exception {
         ExerciseTo newExerciseTo = getNewExerciseTo();
         newExerciseTo.setQuantity(0);
-        ResultActions resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI);
+        ResultActions resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI, userJwtHeader);
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_EXERCISE_QUANTITY_MIN_RESPONSE);
 
         newExerciseTo = getNewExerciseTo();
         newExerciseTo.setExerciseTypeId(null);
-        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI);
+        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI, userJwtHeader);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_EXERCISE_EXERCISE_TYPE_ID_NULL_RESPONSE);
 
         newExerciseTo = getNewExerciseTo();
         newExerciseTo.setWorkoutId(null);
-        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI);
+        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI, userJwtHeader);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_EXERCISE_WORKOUT_ID_NULL_RESPONSE);
 
         newExerciseTo = getNewExerciseTo();
         newExerciseTo.setWorkoutId(ADMIN_WORKOUT1_ID);
-        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI);
+        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI, userJwtHeader);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(EXERCISE_MUST_BE_WITH_WORKOUT_ID_RESPONSE);
 
         newExerciseTo = getNewExerciseTo();
         newExerciseTo.setExerciseTypeId(ADMIN_EXERCISE_TYPE1_ID);
-        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI);
+        resultActions = getResultActionsWhenToNotValid(newExerciseTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI, userJwtHeader);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(EXERCISE_TYPE_NOT_OWN_NOT_FOUND_RESPONSE);
@@ -451,15 +451,6 @@ class ExerciseControllerTest extends AbstractControllerTest {
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(ACCESS_DENIED_RESPONSE);
-    }
-
-    private ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
-        return perform(MockMvcRequestBuilders.post(urlTemplate)
-                .headers(userJwtHeader)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(to)))
-                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
 }

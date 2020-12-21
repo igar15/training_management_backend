@@ -22,8 +22,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.annotation.PostConstruct;
 
-import static com.igar15.training_management.UserTestData.ADMIN;
-import static com.igar15.training_management.UserTestData.USER1;
+import static com.igar15.training_management.testdata.UserTestData.ADMIN;
+import static com.igar15.training_management.testdata.UserTestData.USER1;
 
 @SpringBootTest
 @Transactional
@@ -74,5 +74,24 @@ public abstract class AbstractControllerTest {
     public ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
     }
+
+    public ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
+        return perform(MockMvcRequestBuilders.post(urlTemplate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(to)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+        public ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate, HttpHeaders authHeader) throws Exception {
+        return perform(MockMvcRequestBuilders.post(urlTemplate)
+                .headers(authHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(to)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+
 
 }

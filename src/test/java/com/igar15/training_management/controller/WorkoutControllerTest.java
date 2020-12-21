@@ -17,9 +17,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-import static com.igar15.training_management.ControllerTestData.*;
-import static com.igar15.training_management.UserTestData.*;
-import static com.igar15.training_management.WorkoutTestData.*;
+import static com.igar15.training_management.testdata.ControllerTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
+import static com.igar15.training_management.testdata.WorkoutTestData.*;
 import static org.assertj.core.api.Assertions.*;
 
 class WorkoutControllerTest extends AbstractControllerTest {
@@ -225,7 +225,7 @@ class WorkoutControllerTest extends AbstractControllerTest {
                 .ignoringFields("timeStamp").isEqualTo(WORKOUT_ALREADY_EXIST_RESPONSE);
 
         newWorkoutTo.setDateTime(null);
-        resultActions = getResultActionsWhenToNotValid(newWorkoutTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI);
+        resultActions = getResultActionsWhenToNotValid(newWorkoutTo, USERS_URI + "/" + USER1_ID + WORKOUTS_URI, userJwtHeader);
         myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(NOT_VALID_WORKOUT_DATETIME_NULL_RESPONSE);
@@ -388,15 +388,6 @@ class WorkoutControllerTest extends AbstractControllerTest {
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(WORKOUT_NOT_FOUND_RESPONSE);
-    }
-
-    private ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
-        return perform(MockMvcRequestBuilders.post(urlTemplate)
-                .headers(userJwtHeader)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(to)))
-                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
 }

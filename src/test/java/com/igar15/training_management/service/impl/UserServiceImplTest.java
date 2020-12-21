@@ -27,7 +27,7 @@ import javax.validation.ConstraintViolationException;
 
 import java.util.Date;
 
-import static com.igar15.training_management.UserTestData.*;
+import static com.igar15.training_management.testdata.UserTestData.*;
 import static org.assertj.core.api.Assertions.*;
 
 class UserServiceImplTest extends AbstractServiceTest {
