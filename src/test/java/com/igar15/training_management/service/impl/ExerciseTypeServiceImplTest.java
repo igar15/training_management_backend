@@ -39,7 +39,7 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void getExerciseTypeByIdWhereNotFoundExpected() {
+    void getExerciseTypeByIdWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.getExerciseTypeById(ExerciseTypeTestData.NOT_FOUND_EXERCISE_TYPE_ID, USER1_ID));
     }
 
@@ -104,7 +104,7 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void updateExerciseTypeWhereNameNotChange() {
+    void updateExerciseTypeWhenNameNotChange() {
         ExerciseTypeTo updatedExerciseTypeTo = getUpdatedExerciseTypeTo();
         ExerciseType updatedExerciseTypeExpected = getUpdatedExerciseType();
         updatedExerciseTypeTo.setName("user1 exercise type 1");
@@ -127,7 +127,7 @@ class ExerciseTypeServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void deleteExerciseTypeWhereNotFoundExpected() {
+    void deleteExerciseTypeWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseTypeService.deleteExerciseType(ExerciseTypeTestData.NOT_FOUND_EXERCISE_TYPE_ID, USER1_ID));
     }
 

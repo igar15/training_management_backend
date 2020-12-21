@@ -73,7 +73,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void getUserByEmailWhereNotFoundExpected() {
+    void getUserByEmailWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserByEmail(NOT_FOUND_EMAIL));
     }
 
@@ -120,7 +120,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void deleteUserWhereNotFoundExpected() {
+    void deleteUserWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.deleteUser(NOT_FOUND_USER_ID));
     }
 
@@ -137,13 +137,13 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void verifyEmailTokenWhereNotFoundExpected() {
+    void verifyEmailTokenWhenNotFoundExpected() {
         String random = RandomString.make();
         Assertions.assertThrows(JWTDecodeException.class, () -> userService.verifyEmailToken(random));
     }
 
     @Test
-    void verifyEmailTokenWhereTokenExpiredExpected() {
+    void verifyEmailTokenWhenTokenExpiredExpected() {
         String token = USER2_EXPIRED_VERIFICATION_TOKEN;
         User user = userService.getUserById(USER2_ID);
         user.setEmailVerificationToken(token);
@@ -152,12 +152,12 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void requestPasswordResetWhereNotFoundExpected() {
+    void requestPasswordResetWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.requestPasswordReset(NOT_FOUND_EMAIL));
     }
 
     @Test
-    void resetPasswordWhereTokenExpiredExpected() {
+    void resetPasswordWhenTokenExpiredExpected() {
         String token = USER2_EXPIRED_VERIFICATION_TOKEN;
         Assertions.assertThrows(TokenExpiredException.class, () -> userService.resetPassword(token, "123456"));
     }

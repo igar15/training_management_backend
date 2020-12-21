@@ -25,17 +25,19 @@ class WorkoutServiceImplTest extends AbstractServiceTest {
     @Test
     void getWorkouts() {
         Page<Workout> workouts = workoutService.getWorkouts(PAGEABLE, USER1_ID);
-        assertThat(workouts).isEqualTo(PAGE);
+        assertThat(workouts).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(PAGE);
     }
 
     @Test
     void getWorkoutById() {
         Workout workout = workoutService.getWorkoutById(USER1_WORKOUT1_ID, USER1_ID);
-        assertThat(workout).isEqualTo(USER1_WORKOUT1);
+        assertThat(workout).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(USER1_WORKOUT1);
     }
 
     @Test
-    void getWorkoutByIdWhereNotFoundExpected() {
+    void getWorkoutByIdWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> workoutService.getWorkoutById(NOT_FOUND_WORKOUT_ID, USER1_ID));
     }
 
@@ -51,8 +53,10 @@ class WorkoutServiceImplTest extends AbstractServiceTest {
         Workout createdWorkout = workoutService.createWorkout(newWorkoutTo, USER1_ID);
         Long createdId = createdWorkout.getId();
         newWorkout.setId(createdId);
-        assertThat(createdWorkout).isEqualTo(newWorkout);
-        assertThat(workoutService.getWorkoutById(createdId, USER1_ID)).isEqualTo(newWorkout);
+        assertThat(createdWorkout).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(newWorkout);
+        assertThat(workoutService.getWorkoutById(createdId, USER1_ID)).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(newWorkout);
     }
 
     @Test
@@ -67,7 +71,8 @@ class WorkoutServiceImplTest extends AbstractServiceTest {
         WorkoutTo newWorkoutTo = getNewWorkoutTo();
         newWorkoutTo.setDateTime(USER1_WORKOUT1.getDateTime());
         Workout workout = workoutService.createWorkout(newWorkoutTo, ADMIN_ID);
-        assertThat(workout).isEqualTo(workoutService.getWorkoutById(workout.getId(), ADMIN_ID));
+        assertThat(workout).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(workoutService.getWorkoutById(workout.getId(), ADMIN_ID));
     }
 
     @Test
@@ -80,7 +85,8 @@ class WorkoutServiceImplTest extends AbstractServiceTest {
         WorkoutTo updatedWorkoutTo = getUpdatedWorkoutTo();
         Workout updatedWorkoutExpected = getUpdatedWorkout();
         workoutService.updateWorkout(updatedWorkoutTo, USER1_ID);
-        assertThat(workoutService.getWorkoutById(updatedWorkoutExpected.getId(), USER1_ID)).isEqualTo(updatedWorkoutExpected);
+        assertThat(workoutService.getWorkoutById(updatedWorkoutExpected.getId(), USER1_ID)).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(updatedWorkoutExpected);
     }
 
     @Test
@@ -91,13 +97,14 @@ class WorkoutServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void updateWorkoutWhereDateTimeNotChange() {
+    void updateWorkoutWhenDateTimeNotChange() {
         WorkoutTo updatedWorkoutTo = getUpdatedWorkoutTo();
         Workout updatedWorkoutExpected = getUpdatedWorkout();
         updatedWorkoutTo.setDateTime(USER1_WORKOUT1.getDateTime());
         updatedWorkoutExpected.setDateTime(USER1_WORKOUT1.getDateTime());
         workoutService.updateWorkout(updatedWorkoutTo, USER1_ID);
-        assertThat(workoutService.getWorkoutById(updatedWorkoutExpected.getId(), USER1_ID)).isEqualTo(updatedWorkoutExpected);
+        assertThat(workoutService.getWorkoutById(updatedWorkoutExpected.getId(), USER1_ID)).usingRecursiveComparison()
+                .ignoringFields("user").isEqualTo(updatedWorkoutExpected);
     }
 
     @Test
@@ -113,7 +120,7 @@ class WorkoutServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void deleteWorkoutWhereNotFoundExpected() {
+    void deleteWorkoutWhenNotFoundExpected() {
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> workoutService.deleteWorkout(NOT_FOUND_WORKOUT_ID, USER1_ID));
     }
 
