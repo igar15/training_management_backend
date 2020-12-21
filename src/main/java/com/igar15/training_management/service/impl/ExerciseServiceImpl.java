@@ -72,6 +72,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public void deleteExercise(long id, long workoutId, long userId) {
+        workoutService.getWorkoutById(workoutId, userId); // check for own workout
         Exercise exercise = getExerciseByIdAndWorkoutIdAndUserId(id, workoutId, userId);
         exerciseRepository.delete(exercise);
     }

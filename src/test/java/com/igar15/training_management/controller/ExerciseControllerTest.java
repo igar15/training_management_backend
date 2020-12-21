@@ -412,6 +412,47 @@ class ExerciseControllerTest extends AbstractControllerTest {
                 .ignoringFields("timeStamp").isEqualTo(FORBIDDEN_RESPONSE);
     }
 
+    @Test
+    void deleteExerciseNotOwnWhenUserTry() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + ADMIN_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EXERCISE_NOT_OWN_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
+    void deleteExerciseNotOwnWhenAdminTry() throws Exception {
+        perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(adminJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        Assertions.assertThrows(MyEntityNotFoundException.class, () -> exerciseService.getExerciseByIdAndWorkoutIdAndUserId(USER1_WORKOUT1_EXERCISE1_ID, USER1_WORKOUT1_ID, USER1_ID));
+    }
+
+    @Test
+    void deleteExerciseNotOwnWorkoutId() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(WORKOUT_NOT_OWN_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
+    void deleteExerciseNotOwnUserId() throws Exception {
+        ResultActions resultActions = perform(MockMvcRequestBuilders.delete(USERS_URI + "/" + ADMIN_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(ACCESS_DENIED_RESPONSE);
+    }
+
     private ResultActions getResultActionsWhenToNotValid(Object to, String urlTemplate) throws Exception {
         return perform(MockMvcRequestBuilders.post(urlTemplate)
                 .headers(userJwtHeader)
