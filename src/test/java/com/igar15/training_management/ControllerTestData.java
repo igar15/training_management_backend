@@ -233,5 +233,14 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),"PLEASE CORRECT THESE ERRORS: WORKOUT ID MUST NOT BE NULL");
 
+    public static final MyHttpResponse EXERCISE_UPDATED_MUST_BE_WITH_WORKOUT_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "EXERCISETO{ID=1014, QUANTITY=25, WORKOUTID=10, EXERCISETYPEID=1004} MUST BE WITH WORKOUT ID=1009");
+
+    public static final MyHttpResponse EXERCISE_MUST_BE_WITH_ID_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "EXERCISETO{ID=10, QUANTITY=25, WORKOUTID=1009, EXERCISETYPEID=1004} MUST BE WITH ID=1014");
 
 }

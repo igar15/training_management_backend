@@ -272,7 +272,119 @@ class ExerciseControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateExercise() {
+    void updateExercise() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        Exercise updatedExerciseExpected = getUpdatedExercise();
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        Exercise exercise = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), Exercise.class);
+        assertThat(exercise).usingRecursiveComparison().isEqualTo(updatedExerciseExpected);
+    }
+
+    @Test
+    void updateExerciseWhenUnAuth() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(FORBIDDEN_RESPONSE);
+    }
+
+    @Test
+    void updateExerciseNotOwnWithOwnWorkoutIdAndOwnUserIdWhenUserTry() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        updatedExerciseTo.setId(ADMIN_WORKOUT1_EXERCISE1_ID);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + ADMIN_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EXERCISE_NOT_OWN_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
+    void updateExerciseNotOwnWithNotOwnWorkoutIdInUrlAndOwnUserId() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        updatedExerciseTo.setWorkoutId(ADMIN_WORKOUT1_ID);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + ADMIN_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(WORKOUT_NOT_OWN_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
+    void updateExerciseWithNotOwnWorkoutIdInToAndOwnUserId() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        updatedExerciseTo.setWorkoutId(NOT_FOUND_WORKOUT_ID);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EXERCISE_UPDATED_MUST_BE_WITH_WORKOUT_ID_RESPONSE);
+    }
+
+    @Test
+    void updateExerciseWhenIdsNotTheSame() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        updatedExerciseTo.setId(NOT_FOUND_EXERCISE_ID);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EXERCISE_MUST_BE_WITH_ID_RESPONSE);
+    }
+
+    @Test
+    void updateExerciseNotOwnWhenAdminTry() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        Exercise updatedExerciseExpected = getUpdatedExercise();
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + USER1_WORKOUT1_EXERCISE1_ID)
+                .headers(adminJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        Exercise exercise = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), Exercise.class);
+        assertThat(exercise).usingRecursiveComparison().isEqualTo(updatedExerciseExpected);
+    }
+
+    @Test
+    void updateExerciseNotFound() throws Exception {
+        ExerciseTo updatedExerciseTo = getUpdatedExerciseTo();
+        updatedExerciseTo.setId(NOT_FOUND_EXERCISE_ID);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.put(USERS_URI + "/" + USER1_ID + WORKOUTS_URI + "/" + USER1_WORKOUT1_ID + EXERCISES_URI + "/" + NOT_FOUND_EXERCISE_ID)
+                .headers(userJwtHeader)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedExerciseTo)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EXERCISE_NOT_FOUND_RESPONSE);
     }
 
     @Test

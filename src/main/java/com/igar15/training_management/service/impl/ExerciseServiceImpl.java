@@ -62,6 +62,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Transactional
     public Exercise updateExercise(ExerciseTo exerciseTo, long workoutId, long userId) {
         Assert.notNull(exerciseTo, "Exercise must not be null");
+        workoutService.getWorkoutById(workoutId, userId); // check for own workout
         long id = exerciseTo.getId();
         Exercise exercise = exerciseRepository.findByIdAndWorkout_IdAndUser_Id(id, workoutId, userId).orElseThrow(() -> new MyEntityNotFoundException("Not found exercise with id: " + id));
         exercise.setQuantity(exerciseTo.getQuantity());
