@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.igar15</groupId>
 	<artifactId>training-management</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0 RELEASE</version>
 	<name>training-management</name>
 	<description>Project For Manage Trainings</description>
 
