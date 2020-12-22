@@ -60,11 +60,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                     if (!user.isEnabled()) {
                         throw new DisabledException("User " + userEmail + " account is disabled");
                     }
-//                    List<GrantedAuthority> authorities = jwtTokenProvider.getAuthoritiesFromToken(token);
-//                    List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
                     UserPrincipal userPrincipal = new UserPrincipal(user);
                     usernamePasswordAuthenticationToken =
-//                            new UsernamePasswordAuthenticationToken(userEmail, null, authorities);
                             new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 }

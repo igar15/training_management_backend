@@ -19,8 +19,8 @@ public class EmailService {
         final String url = "http://localhost:8080/training-management" + "/users/email-verification?token=" + emailVerificationToken;
         final SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Email verifying for Training Management App");
-        message.setText("Hello, " + name + "! To complete registration in Training Management App please open the following URL to verify your email: \r\n" + url);
+        message.setSubject(environment.getProperty("email.verification.message.subject"));
+        message.setText(String.format(environment.getProperty("email.verification.message.text") , name, url));
         message.setFrom(environment.getProperty("support.email"));
         mailSender.send(message);
     }
@@ -30,8 +30,8 @@ public class EmailService {
         final String url = "http://localhost:8081/training-management-frontend" + "/users/password-reset?token=" + passwordResetToken;
         final SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Reset password for Training Management App");
-        message.setText("Hello, " + name + "! To reset your password in Training Management App please open the following URL: \r\n" + url);
+        message.setSubject(environment.getProperty("email.passwordreset.message.subject"));
+        message.setText(String.format(environment.getProperty("email.passwordreset.message.text") , name, url));
         message.setFrom(environment.getProperty("support.email"));
         mailSender.send(message);
     }

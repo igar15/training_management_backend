@@ -104,7 +104,6 @@ public class MyExceptionHandler {
         log.warn("Error at request {} : {}", request.getRequestURL(), exception.toString());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), SecurityConstant.NOT_ENOUGH_PERMISSION);
         return new ResponseEntity<>(myHttpResponse, HttpStatus.FORBIDDEN);
-
     }
 
     @ExceptionHandler(LockedException.class)
