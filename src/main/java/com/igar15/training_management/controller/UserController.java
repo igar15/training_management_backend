@@ -1,5 +1,6 @@
 package com.igar15.training_management.controller;
 
+import com.igar15.training_management.constants.FileConstant;
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.security.UserPrincipal;
@@ -25,8 +26,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @RestController
@@ -189,6 +195,24 @@ public class UserController {
         userService.resetPassword(passwordResetModel.getToken(), passwordResetModel.getPassword());
         MyHttpResponse myHttpResponse = new MyHttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), "Your password was successfully reset");
         return new ResponseEntity<>(myHttpResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/updateProfileImage/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    public ResponseEntity<User> updateProfileImage(@PathVariable("id") long id, @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+        User user = userService.updateProfileImage(id, profileImage);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/getProfileImage/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    public byte[] getProfileImage(@PathVariable("id") long id) throws IOException {
+        User user = userService.getUserById(id);
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + user.getEmail()).toAbsolutePath().normalize();
+        if (Files.exists(userFolder)) {
+            return Files.readAllBytes(userFolder.resolve(user.getEmail() + ".jpg"));
+        }
+        return Files.readAllBytes(Paths.get(FileConstant.DEFAULT_PROFILE_IMAGE_PATH));
     }
 
 }

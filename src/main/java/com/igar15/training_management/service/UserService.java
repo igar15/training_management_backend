@@ -4,6 +4,9 @@ import com.igar15.training_management.entity.User;
 import com.igar15.training_management.to.UserTo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface UserService {
 
@@ -26,5 +29,7 @@ public interface UserService {
     void resetPassword(String token, String password);
 
     void enable(long id, boolean enabled);
+
+    User updateProfileImage(long id, MultipartFile profileImage) throws IOException;
 
 }

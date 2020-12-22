@@ -1,5 +1,7 @@
 package com.igar15.training_management.service.impl;
 
+import com.igar15.training_management.constants.FileConstant;
+import com.igar15.training_management.controller.UserController;
 import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.entity.enums.Role;
@@ -13,6 +15,8 @@ import com.igar15.training_management.service.LoginAttemptService;
 import com.igar15.training_management.service.UserService;
 import com.igar15.training_management.to.UserTo;
 import com.igar15.training_management.utils.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +27,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
+
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -159,6 +171,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = getUserById(id);
         user.setEnabled(enabled);
         userRepository.save(user);
+    }
+
+    @Override
+    public User updateProfileImage(long id, MultipartFile profileImage) throws IOException {
+        Assert.notNull(profileImage, "Profile image must not be null");
+        User user = getUserById(id);
+        saveProfileImage(user, profileImage);
+        return user;
+    }
+
+    private void saveProfileImage(User user, MultipartFile profileImage) throws IOException {
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + user.getEmail()).toAbsolutePath().normalize();
+        if (!Files.exists(userFolder)) {
+            Files.createDirectories(userFolder);
+            log.info(FileConstant.DIRECTORY_CREATED + userFolder);
+        }
+        Files.deleteIfExists(Paths.get(userFolder + user.getEmail() + ".jpg"));
+        Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getEmail() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+        log.info(FileConstant.FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
     }
 
     private void validateLoginAttempt(User user) {
