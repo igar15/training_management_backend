@@ -200,6 +200,10 @@ public class UserController {
 
     @PostMapping("/updateProfileImage/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @ApiOperation(value = "${userController.UpdateProfileImage.ApiOperation.Value}", notes = "${userController.UpdateProfileImage.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public ResponseEntity<User> updateProfileImage(@PathVariable("id") long id, @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
         User user = userService.updateProfileImage(id, profileImage);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -207,6 +211,10 @@ public class UserController {
 
     @GetMapping(value = "/getProfileImage/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @ApiOperation(value = "${userController.GetProfileImage.ApiOperation.Value}", notes = "${userController.GetProfileImage.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
+    })
     public byte[] getProfileImage(@PathVariable("id") long id) throws IOException {
         User user = userService.getUserById(id);
         Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + user.getEmail()).toAbsolutePath().normalize();
