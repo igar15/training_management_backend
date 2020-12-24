@@ -1,6 +1,7 @@
 package com.igar15.training_management.controller;
 
 import com.igar15.training_management.AbstractControllerTest;
+import com.igar15.training_management.constants.FileConstant;
 import com.igar15.training_management.constants.SecurityConstant;
 import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
@@ -23,6 +24,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import static com.igar15.training_management.testdata.ControllerTestData.*;
@@ -656,6 +660,66 @@ class UserControllerTest extends AbstractControllerTest {
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
+    }
+
+    @Test
+    void getProfileImageWhenDefaultImageExpect() throws Exception {
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + USER1.getEmail()).toAbsolutePath().normalize();
+        if (Files.exists(userFolder)) {
+            Files.walkFileTree(userFolder, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return super.visitFile(file, attrs);
+                }
+            });
+            Files.delete(userFolder);
+        }
+
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/getProfileImage/" + USER1_ID)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG_VALUE));
+        Assertions.assertEquals(resultActions.andReturn().getResponse().getContentAsString().length(), DEFAULT_PROFILE_IMAGE_SIZE);
+    }
+
+    @Test
+    void getProfileImageWhenUserProfileImageExpect() throws Exception {
+        userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
+
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/getProfileImage/" + USER1_ID)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG_VALUE));
+        Assertions.assertEquals(PROFILE_IMAGE_SIZE, resultActions.andReturn().getResponse().getContentAsString().length());
+    }
+
+    @Test
+    void updateProfileImage() throws Exception {
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + USER1.getEmail()).toAbsolutePath().normalize();
+        if (Files.exists(userFolder)) {
+            Files.walkFileTree(userFolder, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return super.visitFile(file, attrs);
+                }
+            });
+            Files.delete(userFolder);
+        }
+
+        ResultActions resultActions = perform(MockMvcRequestBuilders.multipart(USERS_URI + "/updateProfileImage/" + USER1_ID)
+                .file(PROFILE_IMAGE)
+                .headers(userJwtHeader))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        User user = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), User.class);
+        assertThat(user).usingRecursiveComparison()
+                .ignoringFields("registered", "emailVerificationToken", "password").isEqualTo(USER1);
+
+        long profileImageSize = Files.size(userFolder.resolve(USER1.getEmail() + ".jpg"));
+        Assertions.assertEquals(PROFILE_IMAGE_SIZE, profileImageSize);
     }
 
 }

@@ -3,6 +3,7 @@ package com.igar15.training_management.service.impl;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.igar15.training_management.AbstractServiceTest;
+import com.igar15.training_management.constants.FileConstant;
 import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.EmailExistException;
@@ -17,10 +18,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolationException;
 
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import static com.igar15.training_management.testdata.UserTestData.*;
 import static org.assertj.core.api.Assertions.*;
@@ -178,6 +185,32 @@ class UserServiceImplTest extends AbstractServiceTest {
         Assertions.assertTrue(userService.getUserById(USER1_ID).isEnabled());
         userService.enable(USER1_ID, false);
         Assertions.assertFalse(userService.getUserById(USER1_ID).isEnabled());
+    }
+
+    @Test
+    void updateProfileImageWhenUserProfileImageNotExist() throws IOException {
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + USER1.getEmail()).toAbsolutePath().normalize();
+        if (Files.exists(userFolder)) {
+            Files.walkFileTree(userFolder, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return super.visitFile(file, attrs);
+                }
+            });
+            Files.delete(userFolder);
+        }
+        Assertions.assertFalse(Files.exists(userFolder));
+        userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
+        Assertions.assertTrue(Files.exists(userFolder.resolve(USER1.getEmail() + ".jpg")));
+    }
+
+    @Test
+    void updateProfileImageWhenUserProfileImageExist() throws IOException {
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + USER1.getEmail()).toAbsolutePath().normalize();
+        userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
+        userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
+        Assertions.assertTrue(Files.exists(userFolder.resolve(USER1.getEmail() + ".jpg")));
     }
 
 }
