@@ -217,9 +217,9 @@ public class UserController {
     })
     public byte[] getProfileImage(@PathVariable("id") long id) throws IOException {
         User user = userService.getUserById(id);
-        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + user.getEmail()).toAbsolutePath().normalize();
-        if (Files.exists(userFolder)) {
-            return Files.readAllBytes(userFolder.resolve(user.getEmail() + ".jpg"));
+        Path userProfileImage = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + user.getEmail() + "/" + user.getEmail() + ".jpg");
+        if (Files.exists(userProfileImage)) {
+            return Files.readAllBytes(userProfileImage);
         }
         return Files.readAllBytes(Paths.get(FileConstant.DEFAULT_PROFILE_IMAGE_PATH));
     }
