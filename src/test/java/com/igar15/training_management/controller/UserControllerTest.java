@@ -562,6 +562,18 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void verifyEmailTokenWhenTokenIsNotFound() throws Exception {
+        String token = jwtTokenProvider.generateEmailVerificationToken(NOT_FOUND_EMAIL);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/email-verification")
+                .param("token", token))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(USER_WITH_TOKEN_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
     void requestPasswordReset() throws Exception {
         ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/password-reset-request/" + USER1.getEmail()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -628,6 +640,20 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void resetPasswordWhenTokenIsNotFound() throws Exception {
+        PasswordResetModel passwordResetModel = new PasswordResetModel();
+        String token = jwtTokenProvider.generatePasswordResetToken(NOT_FOUND_EMAIL);
+        passwordResetModel.setToken(token);
+        passwordResetModel.setPassword(NEW_PASSWORD);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/resetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(passwordResetModel)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        Assertions.assertTrue(myHttpResponse.getMessage().contains("NOT FOUND TOKEN WITH TOKEN: "));
+    }
+
+    @Test
     void resetPasswordWhenPasswordResetModelIsNotValid() throws Exception {
         PasswordResetModel passwordResetModel = new PasswordResetModel();
         passwordResetModel.setToken(null);
@@ -660,6 +686,55 @@ class UserControllerTest extends AbstractControllerTest {
         MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
         assertThat(myHttpResponse).usingRecursiveComparison()
                 .ignoringFields("timeStamp").isEqualTo(BAD_REQUEST_DATA_RESPONSE);
+    }
+
+    @Test
+    void tryToEnableBannedUserThrowEmailVerification() throws Exception {
+        String emailVerificationToken = jwtTokenProvider.generateEmailVerificationToken(USER2.getEmail());
+        User user = userService.getUserById(USER2_ID);
+        user.setEmailVerificationToken(emailVerificationToken);
+        userRepository.save(user);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/email-verification")
+                .param("token", emailVerificationToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(EMAIL_VERIFIED_RESPONSE);
+
+        userService.enable(USER2_ID, false);
+        resultActions = perform(MockMvcRequestBuilders.get(USERS_URI + "/email-verification")
+                .param("token", emailVerificationToken))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(USER_WITH_TOKEN_NOT_FOUND_RESPONSE);
+    }
+
+    @Test
+    void tryToResetPasswordTwiceForTheSameToken() throws Exception {
+        userService.requestPasswordReset(USER1.getEmail());
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser_Email(USER1.getEmail()).orElseThrow(() -> new MyEntityNotFoundException("Not found password reset token for email: " + USER1.getEmail()));
+        PasswordResetModel passwordResetModel = new PasswordResetModel();
+        passwordResetModel.setToken(passwordResetToken.getToken());
+        passwordResetModel.setPassword(NEW_PASSWORD);
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/resetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(passwordResetModel)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        MyHttpResponse myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        assertThat(myHttpResponse).usingRecursiveComparison()
+                .ignoringFields("timeStamp").isEqualTo(PASSWORD_RESET_SUCCESS_RESPONSE);
+        User user = userService.getUserByEmail(USER1.getEmail());
+        Assertions.assertTrue(BCrypt.checkpw(NEW_PASSWORD, user.getPassword()));
+
+        resultActions = perform(MockMvcRequestBuilders.post(USERS_URI + "/resetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(passwordResetModel)))
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
+        myHttpResponse = JsonUtil.readValue(resultActions.andReturn().getResponse().getContentAsString(), MyHttpResponse.class);
+        Assertions.assertTrue(myHttpResponse.getMessage().contains("NOT FOUND TOKEN WITH TOKEN: "));
     }
 
     @Test

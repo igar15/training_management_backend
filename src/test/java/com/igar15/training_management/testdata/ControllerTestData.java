@@ -85,6 +85,12 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "NOT FOUND USER WITH ID: 10");
 
+    public static final MyHttpResponse USER_WITH_TOKEN_NOT_FOUND_RESPONSE = new MyHttpResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
+            "NOT FOUND USER WITH SUCH TOKEN");
+
+
     public static final MyHttpResponse EMAIL_VERIFIED_RESPONSE = new MyHttpResponse(HttpStatus.OK.value(),
             HttpStatus.OK,
             HttpStatus.OK.getReasonPhrase().toUpperCase(),
@@ -127,8 +133,6 @@ public class ControllerTestData {
             HttpStatus.UNPROCESSABLE_ENTITY,
             HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase().toUpperCase(),
             "PLEASE CORRECT THESE ERRORS: PASSWORD LENGTH MUST BE BETWEEN 5 AND 32 CHARACTERS");
-
-
 
 
 
