@@ -121,9 +121,16 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void deleteUser() {
+    void deleteUser() throws IOException {
+        // add image to user for check it will be delete next
+        userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + USER1.getEmail()).toAbsolutePath().normalize();
+        Assertions.assertTrue(Files.exists(userFolder.resolve(USER1.getEmail() + ".jpg")));
+
         userService.deleteUser(USER1_ID);
         Assertions.assertThrows(MyEntityNotFoundException.class, () -> userService.getUserById(USER1_ID));
+        Assertions.assertTrue(Files.notExists(userFolder.resolve(USER1.getEmail() + ".jpg")));
+        Assertions.assertTrue(Files.notExists(userFolder));
     }
 
     @Test

@@ -20,7 +20,7 @@ public interface UserService {
 
     User updateUser(long id, UserTo userTo);
 
-    void deleteUser(long id);
+    void deleteUser(long id) throws IOException;
 
     void verifyEmailToken(String token);
 

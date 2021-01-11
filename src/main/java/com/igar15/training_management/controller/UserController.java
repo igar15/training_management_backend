@@ -147,7 +147,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${authorizationHeader.description}", paramType = "header")
     })
-    public void deleteUser(@PathVariable("id") long id) {
+    public void deleteUser(@PathVariable("id") long id) throws IOException {
         log.info("delete user id={}", id);
         userService.deleteUser(id);
     }

@@ -124,10 +124,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void deleteUser(long id) {
+    public void deleteUser(long id) throws IOException {
         User user = getUserById(id);
         userRepository.delete(user);
         loginAttemptService.evictUserFromLoginAttemptCache(user.getEmail());
+        deleteProfileImage(user);
     }
 
     @Override
@@ -187,9 +188,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Files.createDirectories(userFolder);
             log.info(FileConstant.DIRECTORY_CREATED + userFolder);
         }
-        Files.deleteIfExists(Paths.get(userFolder + user.getEmail() + ".jpg"));
+        Files.deleteIfExists(userFolder.resolve(user.getEmail() + ".jpg"));
         Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getEmail() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
         log.info(FileConstant.FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
+    }
+
+    private void deleteProfileImage(User user) throws IOException {
+        Path userFolder = Paths.get(FileConstant.USER_PROFILE_IMAGE_FOLDER + user.getEmail()).toAbsolutePath().normalize();
+        Files.deleteIfExists(userFolder.resolve(user.getEmail() + ".jpg"));
+        Files.deleteIfExists(userFolder);
     }
 
     private void validateLoginAttempt(User user) {
