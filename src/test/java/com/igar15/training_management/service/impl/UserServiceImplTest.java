@@ -7,6 +7,7 @@ import com.igar15.training_management.constants.FileConstant;
 import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.exceptions.EmailExistException;
+import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
@@ -218,6 +219,11 @@ class UserServiceImplTest extends AbstractServiceTest {
         userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
         userService.updateProfileImage(USER1_ID, PROFILE_IMAGE);
         Assertions.assertTrue(Files.exists(userFolder.resolve(USER1.getEmail() + ".jpg")));
+    }
+
+    @Test
+    void updateProfileImageWhenFileIsNotAnImage() {
+        Assertions.assertThrows(IllegalRequestDataException.class, () -> userService.updateProfileImage(USER1_ID, TEXT_FILE));
     }
 
 }

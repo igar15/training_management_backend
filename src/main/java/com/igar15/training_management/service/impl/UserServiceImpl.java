@@ -6,6 +6,7 @@ import com.igar15.training_management.entity.PasswordResetToken;
 import com.igar15.training_management.entity.User;
 import com.igar15.training_management.entity.enums.Role;
 import com.igar15.training_management.exceptions.EmailExistException;
+import com.igar15.training_management.exceptions.IllegalRequestDataException;
 import com.igar15.training_management.exceptions.MyEntityNotFoundException;
 import com.igar15.training_management.repository.PasswordResetTokenRepository;
 import com.igar15.training_management.repository.UserRepository;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -177,6 +180,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User updateProfileImage(long id, MultipartFile profileImage) throws IOException {
         Assert.notNull(profileImage, "Profile image must not be null");
+        if (!List.of(MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
+            throw new IllegalRequestDataException(profileImage.getOriginalFilename() + " is not an image. Please upload an image");
+        }
         User user = getUserById(id);
         saveProfileImage(user, profileImage);
         return user;

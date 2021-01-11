@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
@@ -36,9 +37,12 @@ public class UserTestData {
     public static final Page<User> PAGEO_SIZE5 = new PageImpl<>(List.of(USER1, USER2, USER3, ADMIN), PAGEABLE_PAGE0_SIZE5, 4);
     public static final Page<User> PAGE1_SIZE2 = new PageImpl<>(List.of(USER3, ADMIN), PAGEABLE_PAGE1_SIZE2, 4);
 
-    public static final MockMultipartFile PROFILE_IMAGE = new MockMultipartFile("profileImage", new byte[]{1, 2, 3, 4, 5});
+    public static final MockMultipartFile PROFILE_IMAGE = new MockMultipartFile("profileImage", null, MediaType.IMAGE_JPEG_VALUE, new byte[]{1, 2, 3, 4, 5});
     public static final long PROFILE_IMAGE_SIZE = 5;
     public static final long DEFAULT_PROFILE_IMAGE_SIZE = 16517;
+
+    public static final MockMultipartFile TEXT_FILE = new MockMultipartFile("textFile", null, MediaType.TEXT_PLAIN_VALUE, new byte[]{1, 2, 3, 4, 5});
+
 
 
     public static UserTo getNewUserTo() {
